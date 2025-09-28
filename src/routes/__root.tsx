@@ -1,13 +1,22 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanstackDevtools } from '@tanstack/react-devtools'
+import { Outlet, createRootRoute, useLocation } from '@tanstack/react-router'
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
-import Header from '../components/Header'
+import { Header } from '../components/Header'
+import '../lib/i18n'
+import { getPageIdentifier } from '../types/navigation'
 
 export const Route = createRootRoute({
-  component: () => (
+  component: RootComponent,
+})
+
+function RootComponent() {
+  const location = useLocation()
+  const currentPage = getPageIdentifier(location.pathname)
+
+  return (
     <>
-      <Header />
+      <Header currentPage={currentPage} />
       <Outlet />
       <TanstackDevtools
         config={{
@@ -21,5 +30,5 @@ export const Route = createRootRoute({
         ]}
       />
     </>
-  ),
-})
+  )
+}

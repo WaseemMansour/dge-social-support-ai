@@ -9,8 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as FinancialAssistanceRouteImport } from './routes/financial-assistance'
 import { Route as IndexRouteImport } from './routes/index'
 
+const FinancialAssistanceRoute = FinancialAssistanceRouteImport.update({
+  id: '/financial-assistance',
+  path: '/financial-assistance',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +25,39 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/financial-assistance': typeof FinancialAssistanceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/financial-assistance': typeof FinancialAssistanceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/financial-assistance': typeof FinancialAssistanceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/financial-assistance'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/financial-assistance'
+  id: '__root__' | '/' | '/financial-assistance'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FinancialAssistanceRoute: typeof FinancialAssistanceRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/financial-assistance': {
+      id: '/financial-assistance'
+      path: '/financial-assistance'
+      fullPath: '/financial-assistance'
+      preLoaderRoute: typeof FinancialAssistanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FinancialAssistanceRoute: FinancialAssistanceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
