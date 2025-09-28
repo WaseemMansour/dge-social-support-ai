@@ -1,23 +1,103 @@
 import { Helmet } from '@dr.pogodin/react-helmet'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute } from '@tanstack/react-router'
+import React, { useMemo } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { WizardLayout } from '../components/WizardLayout'
 import { Button } from '../components/ui/button'
+import { DatePicker } from '../components/ui/date-picker'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select'
+import { Textarea } from '../components/ui/textarea'
+import { cn } from '../lib/utils'
+import { createPersonalInfoSchema, type PersonalInfoFormData } from '../schemas/financial-assistance'
 
 export const Route = createFileRoute('/financial-assistance')({
   component: FinancialAssistancePage,
 })
 
+// Form Field Component for consistent styling and error handling
+interface FormFieldProps {
+  label: string
+  required?: boolean
+  error?: string
+  touched?: boolean
+  isSubmitted?: boolean
+  children: React.ReactNode
+  className?: string
+}
+
+function FormField({ label, required = false, error, touched = false, isSubmitted = false, children, className }: FormFieldProps) {
+  const { i18n } = useTranslation()
+  const isRTL = i18n.language === 'ar'
+  
+  // Show error if field is touched OR form has been submitted
+  const shouldShowError = error && (touched || isSubmitted)
+  
+  return (
+    <div className={cn("space-y-1", className)}>
+      <Label className={cn("text-sm font-medium text-gray-700", isRTL && "text-right")}>
+        {label}
+        {required && <span className={cn("text-red-500", isRTL ? "mr-1" : "ml-1")}>*</span>}
+      </Label>
+      {children}
+      {shouldShowError && (
+        <p className={cn("text-sm text-red-600 mt-0.5", isRTL && "text-right")}>{error}</p>
+      )}
+    </div>
+  )
+}
+
 function FinancialAssistancePage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isRTL = i18n.language === 'ar'
   const steps = [
     t('financial-assistance.steps.personalInfo'),
     t('financial-assistance.steps.familyFinancial'),
     t('financial-assistance.steps.situationDescription')
   ]
   const currentStep = 1
+
+
+  // Create schema with current language
+  const schema = useMemo(() => createPersonalInfoSchema(t), [t])
+
+  // React Hook Form setup
+  const {
+    handleSubmit,
+    control,
+    trigger,
+    formState: { errors, isSubmitting, touchedFields, isSubmitted }
+  } = useForm<PersonalInfoFormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      nationalId: '',
+      dateOfBirth: undefined,
+      gender: '',
+      phone: '',
+      email: '',
+      address: '',
+      city: '',
+      state: '',
+      country: ''
+    },
+    mode: 'onChange' // Validate on change and submit
+  })
+
+  // Update resolver when language changes
+  React.useEffect(() => {
+    // Re-validate all fields with new schema
+    trigger()
+  }, [i18n.language, trigger])
+
+  const onSubmit = (data: PersonalInfoFormData) => {
+    console.log('Form data:', data)
+    // Handle form submission here
+  }
   
 
   return (
@@ -34,81 +114,296 @@ function FinancialAssistancePage() {
         <meta name="twitter:description" content={t('meta.financialAssistance.description')} />
       </Helmet>
       <WizardLayout currentStep={currentStep} steps={steps}>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {t('financial-assistance.title')}
-          </h1>
-          <div className="w-24 h-1 bg-[#C2B89C] rounded-full mb-6"></div>
-        </div>
-
-        <div className="space-y-4 mb-8">
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-[#C2B89C] rounded-full"></div>
-            <span className="text-gray-700">{t('financial-assistance.benefits.exclusive')}</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-[#C2B89C] rounded-full"></div>
-            <span className="text-gray-700">{t('financial-assistance.benefits.experts')}</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-[#C2B89C] rounded-full"></div>
-            <span className="text-gray-700">{t('financial-assistance.benefits.service')}</span>
-          </div>
-        </div>
-
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" dir={isRTL ? 'rtl' : 'ltr'}>
           <div>
-            <Label htmlFor="firstName">First Name *</Label>
-            <Input id="firstName" placeholder="Enter your first name" />
+            <h1 className={cn("text-3xl font-bold text-gray-900 mb-2", isRTL && "text-right")}>
+              {t('financial-assistance.steps.personalInfo')}
+            </h1>
+            <p className={cn("text-gray-600 mb-6", isRTL && "text-right")}>
+              {t('financial-assistance.form.subtitle')}
+            </p>
+            <div className={cn("w-24 h-1 bg-[#C2B89C] rounded-full mb-6", isRTL && "ml-auto")}></div>
           </div>
-          
-          <div>
-            <Label htmlFor="lastName">Last Name *</Label>
-            <Input id="lastName" placeholder="Enter your last name" />
-          </div>
-          
-          <div>
-            <Label htmlFor="email">E-mail *</Label>
-            <Input id="email" type="email" placeholder="Enter your email" />
-          </div>
-          
-          <div>
-            <Label htmlFor="password">Password *</Label>
-            <Input id="password" type="password" placeholder="Enter your password" />
-          </div>
-          
-          <div>
-            <Label htmlFor="confirmPassword">Retype password *</Label>
-            <Input id="confirmPassword" type="password" placeholder="Confirm your password" />
-          </div>
-        </div>
 
-        <div className="text-sm text-gray-600 mb-6">
-          By creating an account, you agree to our{" "}
-          <a href="#" className="text-gray-800 hover:underline">Privacy Policy</a>{" "}
-          and{" "}
-          <a href="#" className="text-gray-800 hover:underline">Terms of Use</a>.
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Name */}
+            <FormField 
+              label={t('financial-assistance.form.firstName')} 
+              required 
+              error={errors.firstName?.message}
+              touched={!!touchedFields.firstName}
+              isSubmitted={isSubmitted}
+              className="w-full"
+            >
+              <Controller
+                name="firstName"
+                control={control}
+                render={({ field }) => (
+                  <Input 
+                    {...field}
+                    placeholder={t('financial-assistance.form.placeholders.firstName')}
+                    className="w-full"
+                  />
+                )}
+              />
+            </FormField>
+            
+            <FormField 
+              label={t('financial-assistance.form.lastName')} 
+              required 
+              error={errors.lastName?.message}
+              touched={!!touchedFields.lastName}
+              isSubmitted={isSubmitted}
+              className="w-full"
+            >
+              <Controller
+                name="lastName"
+                control={control}
+                render={({ field }) => (
+                  <Input 
+                    {...field}
+                    placeholder={t('financial-assistance.form.placeholders.lastName')}
+                    className="w-full"
+                  />
+                )}
+              />
+            </FormField>
 
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Button className="bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white flex-1">
-            SIGN UP
-          </Button>
-          <Button variant="outline" className="border-[#C2B89C] text-[#C2B89C] hover:bg-[#C2B89C]/10 flex-1">
-            ADD DETAILS
-          </Button>
-        </div>
+            {/* National ID */}
+            <FormField 
+              label={t('financial-assistance.form.nationalId')} 
+              required 
+              error={errors.nationalId?.message}
+              touched={!!touchedFields.nationalId}
+              isSubmitted={isSubmitted}
+              className="w-full"
+            >
+              <Controller
+                name="nationalId"
+                control={control}
+                render={({ field }) => (
+                  <Input 
+                    {...field}
+                    placeholder={t('financial-assistance.form.placeholders.nationalId')}
+                    className="w-full"
+                  />
+                )}
+              />
+            </FormField>
 
-        <div className="text-sm text-gray-500 text-center">
-          * You can skip next steps and add personal data later
-        </div>
+            {/* Date of Birth */}
+            <FormField 
+              label={t('financial-assistance.form.dateOfBirth')} 
+              required 
+              error={errors.dateOfBirth?.message}
+              touched={!!touchedFields.dateOfBirth}
+              isSubmitted={isSubmitted}
+              className="w-full"
+            >
+              <Controller
+                name="dateOfBirth"
+                control={control}
+                render={({ field }) => (
+                  <DatePicker 
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    placeholder={t('financial-assistance.form.placeholders.dateOfBirth')}
+                    className="w-full"
+                  />
+                )}
+              />
+            </FormField>
 
-        <div className="text-center text-sm text-gray-600">
-          Already a member?{" "}
-          <a href="#" className="text-gray-800 hover:underline">Log in</a>.
-        </div>
-      </div>
+            {/* Gender */}
+            <FormField 
+              label={t('financial-assistance.form.gender')} 
+              required 
+              error={errors.gender?.message}
+              touched={!!touchedFields.gender}
+              isSubmitted={isSubmitted}
+              className="w-full"
+            >
+              <Controller
+                name="gender"
+                control={control}
+                render={({ field }) => (
+                  <Select 
+                    value={field.value} 
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger className="w-full" onBlur={field.onBlur}>
+                      <SelectValue placeholder={t('financial-assistance.form.select.gender')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">{t('financial-assistance.form.genders.male')}</SelectItem>
+                      <SelectItem value="female">{t('financial-assistance.form.genders.female')}</SelectItem>
+                      <SelectItem value="other">{t('financial-assistance.form.genders.other')}</SelectItem>
+                      <SelectItem value="prefer-not-to-say">{t('financial-assistance.form.genders.preferNotToSay')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </FormField>
+
+            {/* Phone */}
+            <FormField 
+              label={t('financial-assistance.form.phone')} 
+              required 
+              error={errors.phone?.message}
+              touched={!!touchedFields.phone}
+              isSubmitted={isSubmitted}
+              className="w-full"
+            >
+              <Controller
+                name="phone"
+                control={control}
+                render={({ field }) => (
+                  <Input 
+                    {...field}
+                    type="tel" 
+                    placeholder={t('financial-assistance.form.placeholders.phone')}
+                    className="w-full"
+                  />
+                )}
+              />
+            </FormField>
+
+            {/* Email */}
+            <FormField 
+              label={t('financial-assistance.form.email')} 
+              required 
+              error={errors.email?.message}
+              touched={!!touchedFields.email}
+              isSubmitted={isSubmitted}
+              className="w-full"
+            >
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <Input 
+                    {...field}
+                    type="email" 
+                    placeholder={t('financial-assistance.form.placeholders.email')}
+                    className="w-full"
+                  />
+                )}
+              />
+            </FormField>
+
+            {/* Address */}
+            <FormField 
+              label={t('financial-assistance.form.address')} 
+              required 
+              error={errors.address?.message}
+              touched={!!touchedFields.address}
+              isSubmitted={isSubmitted}
+              className="w-full md:col-span-2"
+            >
+              <Controller
+                name="address"
+                control={control}
+                render={({ field }) => (
+                  <Textarea 
+                    {...field}
+                    placeholder={t('financial-assistance.form.placeholders.address')} 
+                    rows={3}
+                    className="w-full"
+                  />
+                )}
+              />
+            </FormField>
+
+            {/* City */}
+            <FormField 
+              label={t('financial-assistance.form.city')} 
+              required 
+              error={errors.city?.message}
+              touched={!!touchedFields.city}
+              isSubmitted={isSubmitted}
+              className="w-full"
+            >
+              <Controller
+                name="city"
+                control={control}
+                render={({ field }) => (
+                  <Input 
+                    {...field}
+                    placeholder={t('financial-assistance.form.placeholders.city')}
+                    className="w-full"
+                  />
+                )}
+              />
+            </FormField>
+
+            {/* State */}
+            <FormField 
+              label={t('financial-assistance.form.state')} 
+              required 
+              error={errors.state?.message}
+              touched={!!touchedFields.state}
+              isSubmitted={isSubmitted}
+              className="w-full"
+            >
+              <Controller
+                name="state"
+                control={control}
+                render={({ field }) => (
+                  <Input 
+                    {...field}
+                    placeholder={t('financial-assistance.form.placeholders.state')}
+                    className="w-full"
+                  />
+                )}
+              />
+            </FormField>
+
+            {/* Country */}
+            <FormField 
+              label={t('financial-assistance.form.country')} 
+              required 
+              error={errors.country?.message}
+              touched={!!touchedFields.country}
+              isSubmitted={isSubmitted}
+              className="w-full"
+            >
+              <Controller
+                name="country"
+                control={control}
+                render={({ field }) => (
+                  <Select 
+                    value={field.value} 
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger className="w-full" onBlur={field.onBlur}>
+                      <SelectValue placeholder={t('financial-assistance.form.select.country')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="AE">{t('financial-assistance.form.countries.AE')}</SelectItem>
+                      <SelectItem value="SA">{t('financial-assistance.form.countries.SA')}</SelectItem>
+                      <SelectItem value="KW">{t('financial-assistance.form.countries.KW')}</SelectItem>
+                      <SelectItem value="QA">{t('financial-assistance.form.countries.QA')}</SelectItem>
+                      <SelectItem value="BH">{t('financial-assistance.form.countries.BH')}</SelectItem>
+                      <SelectItem value="OM">{t('financial-assistance.form.countries.OM')}</SelectItem>
+                      <SelectItem value="other">{t('financial-assistance.form.countries.other')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </FormField>
+          </div>
+
+          <div className="flex justify-end pt-6">
+            <Button 
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white px-8"
+            >
+              {isSubmitting ? 'Processing...' : 'Continue to Next Step'}
+            </Button>
+          </div>
+        </form>
       </WizardLayout>
     </>
   )

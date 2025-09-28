@@ -93,12 +93,65 @@
       "service": "get the best service experience"
     },
     "form": {
+      "subtitle": "Please provide your personal information to get started with your application.",
       "firstName": "First Name",
       "lastName": "Last Name",
-      "email": "E-mail",
-      "password": "Password",
-      "confirmPassword": "Retype password",
-      "required": "*"
+      "nationalId": "National ID",
+      "dateOfBirth": "Date of Birth",
+      "gender": "Gender",
+      "phone": "Phone Number",
+      "email": "Email Address",
+      "address": "Address",
+      "city": "City",
+      "state": "State/Emirate",
+      "country": "Country",
+      "required": "*",
+      "placeholders": {
+        "firstName": "Enter your first name",
+        "lastName": "Enter your last name",
+        "nationalId": "Enter your National ID",
+        "phone": "Enter your phone number",
+        "email": "Enter your email address",
+        "address": "Enter your full address",
+        "city": "Enter your city",
+        "state": "Enter your state or emirate",
+        "dateOfBirth": "Select your date of birth"
+      },
+      "select": {
+        "gender": "Select your gender",
+        "country": "Select your country"
+      },
+      "genders": {
+        "male": "Male",
+        "female": "Female",
+        "other": "Other",
+        "preferNotToSay": "Prefer not to say"
+      },
+      "countries": {
+        "AE": "United Arab Emirates",
+        "SA": "Saudi Arabia",
+        "KW": "Kuwait",
+        "QA": "Qatar",
+        "BH": "Bahrain",
+        "OM": "Oman",
+        "other": "Other"
+      },
+      "validation": {
+        "firstName": "First name is required",
+        "lastName": "Last name is required",
+        "nationalId": "National ID is required",
+        "nationalIdNumbersOnly": "Only numbers are allowed",
+        "dateOfBirth": "Date of birth is required",
+        "gender": "Gender is required",
+        "phone": "Phone number is required",
+        "phoneNumbersOnly": "Only numbers are allowed",
+        "emailRequired": "Email is required",
+        "email": "Invalid email address",
+        "address": "Address is required",
+        "city": "City is required",
+        "state": "State/Emirate is required",
+        "country": "Country is required"
+      }
     },
     "legal": {
       "agreement": "By creating an account, you agree to our",
