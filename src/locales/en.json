@@ -1,0 +1,102 @@
+{
+  "header": {
+    "logo": {
+      "main": "DGE",
+      "subtitle": "SOCIAL SUPPORT"
+    },
+    "actions": {
+      "startApplication": "Start Application",
+      "logIn": "Log In",
+      "signUp": "Sign Up"
+    }
+  },
+  "landing": {
+    "hero": {
+      "title": "Apply for Financial Assistance",
+      "subtitle": "Quickly & Easily",
+      "description": "Get the support you need with our simple, secure, and guided application process. Complete your application in minutes with step-by-step assistance.",
+      "cta": "Start Application"
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Get financial assistance in three simple steps",
+      "steps": {
+        "step1": {
+          "title": "Complete Application",
+          "description": "Fill out our guided form with your personal and financial information. Our smart system helps you every step of the way."
+        },
+        "step2": {
+          "title": "Review & Verification",
+          "description": "Our expert team reviews your application and verifies your information. We'll contact you if we need any additional details."
+        },
+        "step3": {
+          "title": "Receive Assistance",
+          "description": "Once approved, you'll receive your financial assistance through your preferred method. Track your application status anytime."
+        }
+      }
+    },
+    "trust": {
+      "title": "Trusted & Secure",
+      "subtitle": "Your privacy and security are our top priorities",
+      "features": {
+        "security": {
+          "title": "Bank-Level Security",
+          "description": "Your data is encrypted and protected with the same security standards used by major financial institutions."
+        },
+        "support": {
+          "title": "Expert Support Team",
+          "description": "Our trained specialists are available to help you through every step of the process, ensuring nothing is missed."
+        },
+        "processing": {
+          "title": "Fast Processing",
+          "description": "Most applications are processed within 3-5 business days. You'll receive updates at every stage."
+        },
+        "confidential": {
+          "title": "100% Confidential",
+          "description": "Your application and personal information are kept completely confidential and are never shared with third parties."
+        }
+      }
+    },
+    "cta": {
+      "title": "Ready to Get Started?",
+      "description": "Join thousands of citizens who have successfully applied for financial assistance through our platform.",
+      "button": "Start Your Application"
+    }
+  },
+  "wizard": {
+    "title": "CREATE YOUR ACCOUNT AND START MOVING",
+    "benefits": {
+      "exclusive": "get access to member exclusive benefits",
+      "experts": "get world-class expert support",
+      "service": "get the best service experience"
+    },
+    "form": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "E-mail",
+      "password": "Password",
+      "confirmPassword": "Retype password",
+      "required": "*"
+    },
+    "legal": {
+      "agreement": "By creating an account, you agree to our",
+      "privacyPolicy": "Privacy Policy",
+      "and": "and",
+      "termsOfUse": "Terms of Use"
+    },
+    "actions": {
+      "signUp": "SIGN UP",
+      "addDetails": "ADD DETAILS"
+    },
+    "skip": "* You can skip next steps and add personal data later",
+    "login": {
+      "alreadyMember": "Already a member?",
+      "logIn": "Log in"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success"
+  }
+}
