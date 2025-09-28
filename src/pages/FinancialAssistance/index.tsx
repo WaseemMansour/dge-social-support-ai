@@ -8,6 +8,7 @@ import { saveToLocalStorage, setCurrentStep } from '../../store/slices/formSlice
 import { FamilyFinancialStep } from './steps/FamilyFinancialStep'
 import { PersonalInfoStep } from './steps/PersonalInfoStep'
 import { SituationDescriptionStep } from './steps/SituationDescriptionStep'
+import { SuccessScreen } from './steps/SuccessScreen'
 
 interface FinancialAssistanceWizardProps {
   currentStep: StepName
@@ -17,7 +18,7 @@ export function FinancialAssistanceWizard({ currentStep }: FinancialAssistanceWi
   const { t } = useTranslation()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { formData, isDirty } = useAppSelector((state) => state.form)
+  const { formData, isDirty, hasSubmittedSuccessfully } = useAppSelector((state) => state.form)
 
   const steps = [
     t('financial-assistance.steps.personalInfo'),
@@ -31,6 +32,7 @@ export function FinancialAssistanceWizard({ currentStep }: FinancialAssistanceWi
       'personal-info': 1,
       'family-financial': 2,
       'situation-description': 3,
+      'success': 4,
     }
     return stepMap[step]
   }
@@ -71,6 +73,14 @@ export function FinancialAssistanceWizard({ currentStep }: FinancialAssistanceWi
     }
   }
 
+  const handleSubmissionSuccess = () => {
+    goToStep('success')
+  }
+
+  const handleStartNewApplication = () => {
+    goToStep('personal-info')
+  }
+
   // Render current step component
   const renderCurrentStep = () => {
     switch (currentStep) {
@@ -96,11 +106,30 @@ export function FinancialAssistanceWizard({ currentStep }: FinancialAssistanceWi
             onNext={goToNextStep}
             onPrevious={goToPreviousStep}
             canGoNext={!!formData.situationDescription}
+            onSubmissionSuccess={handleSubmissionSuccess}
+          />
+        )
+      case 'success':
+        return (
+          <SuccessScreen
+            onStartNew={handleStartNewApplication}
           />
         )
       default:
         return null
     }
+  }
+
+  // Access control: Success page should only be accessible after successful submission
+  if (currentStep === 'success' && !hasSubmittedSuccessfully) {
+    // Redirect to first step if trying to access success page without successful submission
+    goToStep('personal-info')
+    return null
+  }
+
+  // Don't show stepper for success screen
+  if (currentStep === 'success') {
+    return renderCurrentStep()
   }
 
   return (

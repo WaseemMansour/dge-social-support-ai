@@ -105,6 +105,16 @@
         "prompt": "Generate content based on your personal and financial information"
       }
     },
+    "success": {
+      "title": "Application Submitted Successfully!",
+      "description": "Thank you for submitting your financial assistance application.",
+      "applicationNumber": "Your Application Number:",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "message": "Your application has been received and is being reviewed. You will be contacted within 5-7 business days with the next steps.",
+      "startNew": "Start New Application",
+      "goHome": "Return to Home"
+    },
     "benefits": {
       "exclusive": "get access to member exclusive benefits",
       "experts": "get world-class expert support",

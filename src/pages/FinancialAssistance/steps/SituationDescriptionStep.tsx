@@ -1,4 +1,5 @@
 import { ChevronLeft } from 'lucide-react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { AIAssistance } from '../../../components/AIAssistance'
@@ -8,12 +9,13 @@ import { Textarea } from '../../../components/ui/textarea'
 import { cn } from '../../../lib/utils'
 import { useSubmitApplicationMutation } from '../../../store/api/financialAssistanceApi'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
-import { updateSituationDescription, type FinancialAssistanceFormData } from '../../../store/slices/formSlice'
+import { markSubmissionSuccess, updateSituationDescription, type FinancialAssistanceFormData } from '../../../store/slices/formSlice'
 
 interface SituationDescriptionStepProps {
   onNext: () => void
   onPrevious: () => void
   canGoNext: boolean
+  onSubmissionSuccess: () => void
 }
 
 // Form Field Component for consistent styling and error handling
@@ -48,7 +50,7 @@ function FormField({ label, required = false, error, touched = false, isSubmitte
   )
 }
 
-export function SituationDescriptionStep({ onPrevious }: SituationDescriptionStepProps) {
+export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: SituationDescriptionStepProps) {
   const { t, i18n } = useTranslation()
   const isRTL = i18n.language === 'ar'
   const dispatch = useAppDispatch()
@@ -60,6 +62,7 @@ export function SituationDescriptionStep({ onPrevious }: SituationDescriptionSte
     handleSubmit,
     register,
     setValue,
+    reset,
     formState: { errors, isSubmitting: isFormSubmitting, touchedFields, isSubmitted }
   } = useForm<FinancialAssistanceFormData['situationDescription']>({
     defaultValues: formData.situationDescription || {
@@ -70,6 +73,15 @@ export function SituationDescriptionStep({ onPrevious }: SituationDescriptionSte
     mode: 'onChange'
   })
 
+  // Reset form when Redux state changes (e.g., after clearing form)
+  useEffect(() => {
+    const newValues = formData.situationDescription || {
+      currentFinancialSituation: '',
+      employmentCircumstances: '',
+      reasonForApplying: '',      
+    }
+    reset(newValues)
+  }, [formData.situationDescription, reset])
 
   const onSubmit = async (data: FinancialAssistanceFormData['situationDescription']) => {
     dispatch(updateSituationDescription(data))
@@ -84,8 +96,10 @@ export function SituationDescriptionStep({ onPrevious }: SituationDescriptionSte
     try {
       const result = await submitApplication(completeFormData).unwrap()
       console.log('Application submitted successfully:', result)
-      // Handle successful submission (e.g., redirect to success page)
-      // You could dispatch an action to clear the form or navigate to a success page
+      // Mark submission as successful
+      dispatch(markSubmissionSuccess())
+      // Navigate to success screen
+      onSubmissionSuccess()
     } catch (error) {
       console.error('Failed to submit application:', error)
       // Error is already handled by RTK Query

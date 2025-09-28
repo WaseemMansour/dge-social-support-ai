@@ -26,13 +26,14 @@ export interface FinancialAssistanceFormData {
 }
 
 // Define step names
-export type StepName = 'personal-info' | 'family-financial' | 'situation-description'
+export type StepName = 'personal-info' | 'family-financial' | 'situation-description' | 'success'
 
 interface FormState {
   currentStep: StepName
   formData: Partial<FinancialAssistanceFormData>
   isDirty: boolean
   lastSaved: string | null
+  hasSubmittedSuccessfully: boolean
 }
 
 // Load initial state from localStorage
@@ -59,6 +60,7 @@ const loadInitialState = (): FormState => {
         formData: parsed.formData || {},
         isDirty: false,
         lastSaved: parsed.lastSaved || null,
+        hasSubmittedSuccessfully: parsed.hasSubmittedSuccessfully || false,
       }
     }
   } catch (error) {
@@ -70,6 +72,7 @@ const loadInitialState = (): FormState => {
     formData: {},
     isDirty: false,
     lastSaved: null,
+    hasSubmittedSuccessfully: false,
   }
 }
 
@@ -114,10 +117,14 @@ const formSlice = createSlice({
       state.currentStep = 'personal-info'
       state.isDirty = false
       state.lastSaved = null
+      state.hasSubmittedSuccessfully = false
       localStorage.removeItem('financial-assistance-form')
     },
     markAsClean: (state) => {
       state.isDirty = false
+    },
+    markSubmissionSuccess: (state) => {
+      state.hasSubmittedSuccessfully = true
     },
   },
 })
@@ -130,6 +137,7 @@ export const {
   saveToLocalStorage,
   clearForm,
   markAsClean,
+  markSubmissionSuccess,
 } = formSlice.actions
 
 export default formSlice.reducer

@@ -9,7 +9,7 @@ export const Route = createFileRoute('/financial-assistance')({
   component: FinancialAssistancePage,
   validateSearch: (search: Record<string, unknown>) => {
     const step = search.step as string
-    const validSteps: StepName[] = ['personal-info', 'family-financial', 'situation-description']
+    const validSteps: StepName[] = ['personal-info', 'family-financial', 'situation-description', 'success']
     
     if (step && !validSteps.includes(step as StepName)) {
       throw redirect({

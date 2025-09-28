@@ -66,6 +66,7 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
     handleSubmit,
     control,
     trigger,
+    reset,
     formState: { errors, isSubmitting, touchedFields, isSubmitted }
   } = useForm<PersonalInfoFormData>({
     resolver: zodResolver(schema),
@@ -94,6 +95,28 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
     // Re-validate all fields with new schema
     trigger()
   }, [i18n.language, trigger])
+
+  // Reset form when Redux state changes (e.g., after clearing form)
+  useEffect(() => {
+    const newValues = {
+      firstName: formData.personalInfo?.firstName || '',
+      lastName: formData.personalInfo?.lastName || '',
+      nationalId: formData.personalInfo?.nationalId || '',
+      dateOfBirth: formData.personalInfo?.dateOfBirth 
+        ? (formData.personalInfo.dateOfBirth instanceof Date 
+            ? formData.personalInfo.dateOfBirth 
+            : new Date(formData.personalInfo.dateOfBirth))
+        : undefined,
+      gender: formData.personalInfo?.gender || '',
+      phone: formData.personalInfo?.phone || '',
+      email: formData.personalInfo?.email || '',
+      address: formData.personalInfo?.address || '',
+      city: formData.personalInfo?.city || '',
+      state: formData.personalInfo?.state || '',
+      country: formData.personalInfo?.country || ''
+    }
+    reset(newValues)
+  }, [formData.personalInfo, reset])
 
   const onSubmit = (data: PersonalInfoFormData) => {
     dispatch(updatePersonalInfo(data))

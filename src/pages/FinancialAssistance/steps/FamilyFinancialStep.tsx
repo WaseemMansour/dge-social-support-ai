@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../../components/ui/button'
@@ -59,6 +60,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
     handleSubmit,
     register,
     control,
+    reset,
     formState: { errors, isSubmitting, touchedFields, isSubmitted }
   } = useForm<FinancialAssistanceFormData['familyFinancial']>({
     defaultValues: formData.familyFinancial || {
@@ -74,6 +76,22 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
     },
     mode: 'onChange'
   })
+
+  // Reset form when Redux state changes (e.g., after clearing form)
+  useEffect(() => {
+    const newValues = formData.familyFinancial || {
+      monthlyIncome: '',
+      monthlyExpenses: '',
+      dependents: '',
+      employmentStatus: '',
+      employerName: '',
+      jobTitle: '',
+      workExperience: '',
+      additionalIncome: '',
+      additionalIncomeSource: ''
+    }
+    reset(newValues)
+  }, [formData.familyFinancial, reset])
 
   const onSubmit = (data: FinancialAssistanceFormData['familyFinancial']) => {
     dispatch(updateFamilyFinancial(data))
