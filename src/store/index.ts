@@ -11,6 +11,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+        // No ignored paths needed - all data is now serializable
       },
     }).concat(financialAssistanceApi.middleware),
 })

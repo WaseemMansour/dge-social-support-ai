@@ -1,8 +1,11 @@
-import { Check, Edit3, Loader2, Sparkles, X } from 'lucide-react'
-import { useState } from 'react'
+import { Check, Copy, Edit3, Loader2, RefreshCw, Sparkles, Wand2, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '../lib/utils'
+import { useGenerateAIContentMutation, type AIRequest } from '../store/api/financialAssistanceApi'
+import { useAppDispatch, useAppSelector } from '../store/hooks'
 import type { FinancialAssistanceFormData } from '../store/slices/formSlice'
+import { updateAIGeneratedContent } from '../store/slices/formSlice'
 import { Button } from './ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog'
 import { Textarea } from './ui/textarea'
@@ -26,44 +29,79 @@ export function AIAssistance({
 }: AIAssistanceProps) {
   const { t, i18n } = useTranslation()
   const isRTL = i18n.language === 'ar'
-  const [isGenerating, setIsGenerating] = useState(false)
+  const dispatch = useAppDispatch()
+  
+  // Get persisted AI generated content from Redux store
+  const persistedContent = useAppSelector(state => 
+    state.form.formData.aiGeneratedContent?.[fieldName as keyof typeof state.form.formData.aiGeneratedContent] || ''
+  )
+  
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [generatedContent, setGeneratedContent] = useState('')
+  const [generatedContent, setGeneratedContent] = useState(persistedContent)
   const [isEditing, setIsEditing] = useState(false)
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
+  const [generationStep, setGenerationStep] = useState<'idle' | 'analyzing' | 'writing' | 'polishing' | 'complete'>('idle')
+  
+  // RTK Query mutation for AI content generation
+  const [generateAIContent, { isLoading: isGenerating }] = useGenerateAIContentMutation()
 
-  // Mock AI generation function
+  // Update local state when persisted content changes
+  useEffect(() => {
+    setGeneratedContent(persistedContent)
+  }, [persistedContent])
+
+  // AI content generation function with enhanced UX
   const generateContent = async () => {
-    setIsGenerating(true)
+    setIsDialogOpen(true)
+    setGenerationStep('analyzing')
     
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    // Mock content generation based on field type and form data
-    let content = ''
-    
-    switch (fieldName) {
-      case 'currentFinancialSituation':
-        content = `Based on your information, I understand that you are currently facing financial challenges. You have a monthly income of ${formData.familyFinancial?.monthlyIncome || 'N/A'} AED and monthly expenses of ${formData.familyFinancial?.monthlyExpenses || 'N/A'} AED. With ${formData.familyFinancial?.dependents || 'N/A'} dependents, this creates a significant financial strain. Your employment status as ${formData.familyFinancial?.employmentStatus || 'N/A'} further complicates your financial stability.`
-        break
-      case 'employmentCircumstances':
-        content = `Your employment circumstances show that you are currently ${formData.familyFinancial?.employmentStatus || 'unemployed'}. ${formData.familyFinancial?.employmentStatus === 'employed' ? `You work as a ${formData.familyFinancial?.jobTitle || 'professional'} with ${formData.familyFinancial?.workExperience || 'N/A'} years of experience.` : 'This situation has significantly impacted your ability to meet your financial obligations and support your family.'} The challenges you face in the current job market make it difficult to secure stable employment that would provide adequate income for your family's needs.`
-        break
-      case 'reasonForApplying':
-        content = `I am applying for financial assistance because my current financial situation has become unsustainable. With ${formData.familyFinancial?.dependents || 'N/A'} dependents relying on me and a monthly income of ${formData.familyFinancial?.monthlyIncome || 'N/A'} AED against expenses of ${formData.familyFinancial?.monthlyExpenses || 'N/A'} AED, I am struggling to meet basic needs. My employment status as ${formData.familyFinancial?.employmentStatus || 'unemployed'} has created additional financial pressure. This assistance would help me stabilize my family's situation and work towards long-term financial independence.`
-        break
-      default:
-        content = 'Generated content based on your information...'
+    // Simulate progressive steps for better UX
+    const steps = ['analyzing', 'writing', 'polishing'] as const
+    for (let i = 0; i < steps.length; i++) {
+      setGenerationStep(steps[i])
+      await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 400))
     }
     
-    setGeneratedContent(content)
-    setIsGenerating(false)
-    setIsDialogOpen(true)
+    try {
+      const request: AIRequest = {
+        prompt: t('financial-assistance.situationFields.aiAssistance.prompt'),
+        fieldName,
+        formData
+      }
+      
+      const response = await generateAIContent(request).unwrap()
+      
+      if (response.success) {
+        setGeneratedContent(response.content)
+        // Persist to Redux store
+        dispatch(updateAIGeneratedContent({ fieldName, content: response.content }))
+        setGenerationStep('complete')
+        setShowSuccessAnimation(true)
+        setTimeout(() => setShowSuccessAnimation(false), 2000)
+      } else {
+        console.error('AI generation failed:', response.error)
+        const fallbackContent = 'I am experiencing financial difficulties and would appreciate assistance during this challenging time.'
+        setGeneratedContent(fallbackContent)
+        // Persist fallback content to Redux store
+        dispatch(updateAIGeneratedContent({ fieldName, content: fallbackContent }))
+        setGenerationStep('complete')
+      }
+    } catch (error) {
+      console.error('Error generating AI content:', error)
+      const fallbackContent = 'I am experiencing financial difficulties and would appreciate assistance during this challenging time.'
+      setGeneratedContent(fallbackContent)
+      // Persist fallback content to Redux store
+      dispatch(updateAIGeneratedContent({ fieldName, content: fallbackContent }))
+      setGenerationStep('complete')
+    }
   }
 
   const handleAccept = () => {
     onAccept(generatedContent)
     setIsDialogOpen(false)
-    setGeneratedContent('')
+    setIsEditing(false)
+    setGenerationStep('idle')
+    // Keep generatedContent persistent - don't clear it
   }
 
   const handleEdit = () => {
@@ -72,112 +110,318 @@ export function AIAssistance({
 
   const handleEditSave = () => {
     onEdit(generatedContent)
+    // Persist edited content to Redux store
+    dispatch(updateAIGeneratedContent({ fieldName, content: generatedContent }))
     setIsDialogOpen(false)
     setIsEditing(false)
-    setGeneratedContent('')
+    setGenerationStep('idle')
+    // Keep generatedContent persistent - don't clear it
   }
 
   const handleDisregard = () => {
     onDisregard()
     setIsDialogOpen(false)
-    setGeneratedContent('')
+    setGenerationStep('idle')
+    // Keep generatedContent persistent - don't clear it
   }
+
+  const handleRegenerate = () => {
+    setGenerationStep('idle')
+    setGeneratedContent('') // Clear previous content when regenerating
+    generateContent()
+  }
+
+  const handleCopyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(generatedContent)
+      // Could add a toast notification here
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error)
+    }
+  }
+
+  const handleModalClose = (open: boolean) => {
+    if (!open) {
+      // Only close the modal, preserve the generated content
+      setIsDialogOpen(false)
+      setIsEditing(false)
+      setGenerationStep('idle')
+    } else {
+      setIsDialogOpen(true)
+    }
+  }
+
+  const getStepMessage = () => {
+    switch (generationStep) {
+      case 'analyzing': return 'Analyzing your information...'
+      case 'writing': return 'Crafting your content...'
+      case 'polishing': return 'Polishing the details...'
+      case 'complete': return 'Content ready!'
+      default: return ''
+    }
+  }
+
+  // Check if we have an API key
+  const hasApiKey = import.meta.env.VITE_OPENAI_API_KEY && import.meta.env.VITE_OPENAI_API_KEY !== 'your-api-key-here'
 
   return (
     <>
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={generateContent}
-        disabled={isGenerating}
-        className={cn(
-          "flex items-center space-x-2 border-[#C2B89C]/30 text-[#C2B89C] hover:bg-[#C2B89C]/10 hover:border-[#C2B89C]/50 transition-all duration-200 shadow-sm",
-          isRTL && "space-x-reverse",
-          className
-        )}
-      >
-        {isGenerating ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
-        ) : (
-          <Sparkles className="w-4 h-4" />
-        )}
-        <span className="text-sm">
-          {isGenerating ? t('financial-assistance.situationFields.aiAssistance.generating') : t('financial-assistance.situationFields.aiAssistance.generate')}
-        </span>
-      </Button>
+      {/* Enhanced AI Assistant Button */}
+      <div className="relative group">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={generateContent}
+          disabled={isGenerating}
+          className={cn(
+            "relative overflow-hidden flex items-center space-x-2",
+            "bg-gradient-to-r from-[#C2B89C]/5 to-[#C2B89C]/10",
+            "border-[#C2B89C]/40 text-[#C2B89C]",
+            "hover:from-[#C2B89C]/10 hover:to-[#C2B89C]/20",
+            "hover:border-[#C2B89C]/60 hover:shadow-lg hover:shadow-[#C2B89C]/20",
+            "transition-all duration-300 ease-out",
+            "transform hover:scale-105 active:scale-95",
+            isRTL && "space-x-reverse",
+            className
+          )}
+        >
+          {/* Animated background gradient */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+          
+          {/* Icon with enhanced animation */}
+          <div className="relative z-10">
+            {isGenerating ? (
+              <div className="relative">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <div className="absolute inset-0 w-4 h-4 border-2 border-[#C2B89C]/20 rounded-full animate-ping" />
+              </div>
+            ) : (
+              <div className="relative">
+                <Wand2 className="w-4 h-4 transition-transform group-hover:rotate-12" />
+                <Sparkles className="absolute -top-1 -right-1 w-2 h-2 text-[#C2B89C]/60 animate-pulse" />
+              </div>
+            )}
+          </div>
+          
+          {/* Text with enhanced styling */}
+          <span className="relative z-10 text-sm font-medium">
+            {isGenerating ? t('financial-assistance.situationFields.aiAssistance.generating') : t('financial-assistance.situationFields.aiAssistance.generate')}
+          </span>
+          
+          {/* Demo indicator with better styling */}
+          {!hasApiKey && (
+            <span className="relative z-10 text-xs bg-[#C2B89C]/20 text-[#C2B89C]/80 px-2 py-0.5 rounded-full border border-[#C2B89C]/30">
+              Demo
+            </span>
+          )}
+        </Button>
+        
+        {/* Subtle glow effect */}
+        <div className="absolute inset-0 rounded-md bg-gradient-to-r from-[#C2B89C]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm -z-10" />
+      </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto" dir={isRTL ? 'rtl' : 'ltr'}>
-          <DialogHeader>
-            <DialogTitle className={cn("flex items-center space-x-2", isRTL && "space-x-reverse")}>
-              <Sparkles className="w-5 h-5 text-[#C2B89C]" />
-              <span>{t('financial-assistance.situationFields.aiAssistance.generate')}</span>
+      {/* Enhanced AI Assistant Modal */}
+      <Dialog open={isDialogOpen} onOpenChange={handleModalClose}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden" dir={isRTL ? 'rtl' : 'ltr'}>
+          {/* Enhanced Header */}
+          <DialogHeader className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#C2B89C]/5 to-transparent rounded-t-lg" />
+            <DialogTitle className={cn("relative flex items-center space-x-3 py-4", isRTL && "space-x-reverse")}>
+              <div className="relative">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#C2B89C] to-[#C2B89C]/80 rounded-full flex items-center justify-center">
+                  <Wand2 className="w-5 h-5 text-white" />
+                </div>
+                {showSuccessAnimation && (
+                  <div className="absolute inset-0 w-10 h-10 bg-[#C2B89C] rounded-full animate-ping opacity-75" />
+                )}
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900">AI Writing Assistant</h3>
+                <p className="text-sm text-gray-600">Powered by advanced AI technology</p>
+              </div>
             </DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-4">
-            <div className="bg-[#C2B89C]/10 border border-[#C2B89C]/20 rounded-lg p-4">
-              <p className="text-sm text-[#C2B89C]/80">
-                {t('financial-assistance.situationFields.aiAssistance.prompt')}
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                {t(`financial-assistance.situationFields.${fieldName}`)}
-              </label>
-              {isEditing ? (
-                <Textarea
-                  value={generatedContent}
-                  onChange={(e) => setGeneratedContent(e.target.value)}
-                  className="min-h-[200px] resize-none"
-                  placeholder={t(`financial-assistance.situationFields.placeholders.${fieldName}`)}
-                />
-              ) : (
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 min-h-[200px]">
-                  <p className="text-gray-800 whitespace-pre-wrap">{generatedContent}</p>
+          <div className="flex-1 overflow-y-auto">
+            {generationStep !== 'complete' ? (
+              /* Enhanced Loading State */
+              <div className="flex items-center justify-center py-16">
+                <div className="text-center space-y-6 max-w-md">
+                  {/* Animated Progress Ring */}
+                  <div className="relative mx-auto w-24 h-24">
+                    <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
+                      {/* Background circle */}
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="currentColor"
+                        strokeWidth="8"
+                        fill="none"
+                        className="text-[#C2B89C]/20"
+                      />
+                      {/* Progress circle */}
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="currentColor"
+                        strokeWidth="8"
+                        fill="none"
+                        strokeDasharray="251.2"
+                        strokeDashoffset="251.2"
+                        className="text-[#C2B89C] transition-all duration-1000 ease-out"
+                        style={{
+                          strokeDashoffset: generationStep === 'analyzing' ? '188.4' : 
+                                           generationStep === 'writing' ? '125.6' : 
+                                           generationStep === 'polishing' ? '62.8' : '0'
+                        }}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Wand2 className="w-8 h-8 text-[#C2B89C] animate-pulse" />
+                    </div>
+                  </div>
+                  
+                  {/* Step Message */}
+                  <div className="space-y-2">
+                    <h4 className="text-lg font-medium text-gray-900">{getStepMessage()}</h4>
+                    <p className="text-sm text-gray-600">
+                      {generationStep === 'analyzing' && 'Reviewing your personal and financial information...'}
+                      {generationStep === 'writing' && 'Creating personalized content based on your situation...'}
+                      {generationStep === 'polishing' && 'Refining the language and ensuring clarity...'}
+                    </p>
+                  </div>
+                  
+                  {/* Progress Dots */}
+                  <div className="flex justify-center space-x-2">
+                    {['analyzing', 'writing', 'polishing'].map((step, index) => (
+                      <div
+                        key={step}
+                        className={cn(
+                          "w-2 h-2 rounded-full transition-all duration-300",
+                          generationStep === step ? "bg-[#C2B89C] scale-125" : 
+                          ['analyzing', 'writing', 'polishing'].indexOf(generationStep) > index ? "bg-[#C2B89C]/60" : "bg-gray-300"
+                        )}
+                      />
+                    ))}
+                  </div>
                 </div>
-              )}
-            </div>
-
-            <div className={cn("flex justify-end space-x-2", isRTL && "space-x-reverse")}>
-              <Button
-                variant="outline"
-                onClick={handleDisregard}
-                className="flex items-center space-x-2"
-              >
-                <X className="w-4 h-4" />
-                <span>{t('financial-assistance.situationFields.aiAssistance.disregard')}</span>
-              </Button>
-              
-              {isEditing ? (
-                  <Button
-                    onClick={handleEditSave}
-                    className="flex items-center space-x-2 bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white"
-                  >
-                    <Check className="w-4 h-4" />
-                    <span>{t('financial-assistance.situationFields.aiAssistance.accept')}</span>
-                  </Button>
-              ) : (
-                <>
-                  <Button
-                    onClick={handleEdit}
-                    className="flex items-center space-x-2 bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white"
-                  >
-                    <Edit3 className="w-4 h-4" />
-                    <span>{t('financial-assistance.situationFields.aiAssistance.edit')}</span>
-                  </Button>
-                  <Button
-                    onClick={handleAccept}
-                    className="flex items-center space-x-2 bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white"
-                  >
-                    <Check className="w-4 h-4" />
-                    <span>{t('financial-assistance.situationFields.aiAssistance.accept')}</span>
-                  </Button>
-                </>
-              )}
-            </div>
+              </div>
+            ) : (
+              /* Enhanced Content Display */
+              <div className="space-y-6">
+                {isEditing ? (
+                  /* Edit Mode */
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2 text-sm text-gray-600">
+                      <Edit3 className="w-4 h-4" />
+                      <span>Edit the generated content below</span>
+                    </div>
+                    <Textarea
+                      value={generatedContent}
+                      onChange={(e) => setGeneratedContent(e.target.value)}
+                      rows={8}
+                      className="w-full resize-none border-2 border-[#C2B89C]/20 focus:border-[#C2B89C] transition-colors"
+                      placeholder="Edit your content here..."
+                    />
+                    <div className="flex justify-end space-x-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsEditing(false)}
+                        className="px-6"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={handleEditSave}
+                        className="bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white px-6"
+                      >
+                        Save Changes
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Content Display Mode */
+                  <div className="space-y-6">
+                    {/* Generated Content Card */}
+                    <div className="relative">
+                      <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-[#C2B89C]/20 rounded-xl p-6 shadow-sm">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                            <span className="text-sm font-medium text-gray-700">Generated Content</span>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleCopyToClipboard}
+                            className="text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                          >
+                            <Copy className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        <div className="prose prose-sm max-w-none">
+                          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+                            {generatedContent}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Action Buttons */}
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                      {/* Left Actions */}
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleEdit}
+                          className="flex items-center space-x-2 hover:bg-[#C2B89C]/10 hover:border-[#C2B89C]/50"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                          <span>Edit</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleRegenerate}
+                          className="flex items-center space-x-2 hover:bg-[#C2B89C]/10 hover:border-[#C2B89C]/50"
+                        >
+                          <RefreshCw className="w-4 h-4" />
+                          <span>Regenerate</span>
+                        </Button>
+                      </div>
+                      
+                      {/* Right Actions */}
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleDisregard}
+                          className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300"
+                        >
+                          <X className="w-4 h-4" />
+                          <span>Disregard</span>
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={handleAccept}
+                          className="bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all duration-200"
+                        >
+                          <Check className="w-4 h-4" />
+                          <span>Accept & Use</span>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

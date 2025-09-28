@@ -1,4 +1,3 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronRight } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -13,6 +12,11 @@ import { cn } from '../../../lib/utils'
 import { createPersonalInfoSchema, type PersonalInfoFormData } from '../../../schemas/financial-assistance'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { updatePersonalInfo } from '../../../store/slices/formSlice'
+
+// Form data type with Date objects for the DatePicker component
+type PersonalInfoFormDataWithDate = Omit<PersonalInfoFormData, 'dateOfBirth'> & {
+  dateOfBirth: Date | undefined
+}
 
 interface PersonalInfoStepProps {
   onNext: () => void
@@ -68,16 +72,14 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
     trigger,
     reset,
     formState: { errors, isSubmitting, touchedFields, isSubmitted }
-  } = useForm<PersonalInfoFormData>({
-    resolver: zodResolver(schema),
+  } = useForm<PersonalInfoFormDataWithDate>({
+    // Manual validation - we'll validate in onSubmit
     defaultValues: {
       firstName: formData.personalInfo?.firstName || '',
       lastName: formData.personalInfo?.lastName || '',
       nationalId: formData.personalInfo?.nationalId || '',
       dateOfBirth: formData.personalInfo?.dateOfBirth 
-        ? (formData.personalInfo.dateOfBirth instanceof Date 
-            ? formData.personalInfo.dateOfBirth 
-            : new Date(formData.personalInfo.dateOfBirth))
+        ? new Date(formData.personalInfo.dateOfBirth)
         : undefined,
       gender: formData.personalInfo?.gender || '',
       phone: formData.personalInfo?.phone || '',
@@ -103,9 +105,7 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
       lastName: formData.personalInfo?.lastName || '',
       nationalId: formData.personalInfo?.nationalId || '',
       dateOfBirth: formData.personalInfo?.dateOfBirth 
-        ? (formData.personalInfo.dateOfBirth instanceof Date 
-            ? formData.personalInfo.dateOfBirth 
-            : new Date(formData.personalInfo.dateOfBirth))
+        ? new Date(formData.personalInfo.dateOfBirth)
         : undefined,
       gender: formData.personalInfo?.gender || '',
       phone: formData.personalInfo?.phone || '',
@@ -118,8 +118,22 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
     reset(newValues)
   }, [formData.personalInfo, reset])
 
-  const onSubmit = (data: PersonalInfoFormData) => {
-    dispatch(updatePersonalInfo(data))
+  const onSubmit = async (data: PersonalInfoFormDataWithDate) => {
+    // Convert Date object to ISO string for validation and Redux storage
+    const dataForValidation: PersonalInfoFormData = {
+      ...data,
+      dateOfBirth: data.dateOfBirth ? data.dateOfBirth.toISOString() : ''
+    }
+    
+    // Validate using the original schema
+    try {
+      schema.parse(dataForValidation)
+    } catch (error) {
+      console.error('Validation error:', error)
+      return // Don't proceed if validation fails
+    }
+    
+    dispatch(updatePersonalInfo(dataForValidation))
     onNext()
   }
 

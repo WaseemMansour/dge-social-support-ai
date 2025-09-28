@@ -23,6 +23,11 @@ export interface FinancialAssistanceFormData {
     documents: string[]
     additionalInfo: string
   }
+  aiGeneratedContent: {
+    currentFinancialSituation: string
+    employmentCircumstances: string
+    reasonForApplying: string
+  }
 }
 
 // Define step names
@@ -43,21 +48,18 @@ const loadInitialState = (): FormState => {
     if (savedState) {
       const parsed = JSON.parse(savedState)
       
-      // Convert dateOfBirth string back to Date object if it exists
-      if (parsed.formData?.personalInfo?.dateOfBirth && typeof parsed.formData.personalInfo.dateOfBirth === 'string') {
-        const date = new Date(parsed.formData.personalInfo.dateOfBirth)
-        // Only set the date if it's valid
-        if (!isNaN(date.getTime())) {
-          parsed.formData.personalInfo.dateOfBirth = date
-        } else {
-          // Remove invalid date
-          delete parsed.formData.personalInfo.dateOfBirth
-        }
-      }
+      // No date conversion needed - dates are now stored as strings
       
       return {
         currentStep: parsed.currentStep || 'personal-info',
-        formData: parsed.formData || {},
+        formData: {
+          ...parsed.formData,
+          aiGeneratedContent: parsed.formData?.aiGeneratedContent || {
+            currentFinancialSituation: '',
+            employmentCircumstances: '',
+            reasonForApplying: ''
+          }
+        },
         isDirty: false,
         lastSaved: parsed.lastSaved || null,
         hasSubmittedSuccessfully: parsed.hasSubmittedSuccessfully || false,
@@ -69,7 +71,13 @@ const loadInitialState = (): FormState => {
   
   return {
     currentStep: 'personal-info',
-    formData: {},
+    formData: {
+      aiGeneratedContent: {
+        currentFinancialSituation: '',
+        employmentCircumstances: '',
+        reasonForApplying: ''
+      }
+    },
     isDirty: false,
     lastSaved: null,
     hasSubmittedSuccessfully: false,
@@ -98,6 +106,17 @@ const formSlice = createSlice({
       state.formData.situationDescription = action.payload
       state.isDirty = true
     },
+    updateAIGeneratedContent: (state, action: PayloadAction<{ fieldName: string; content: string }>) => {
+      if (!state.formData.aiGeneratedContent) {
+        state.formData.aiGeneratedContent = {
+          currentFinancialSituation: '',
+          employmentCircumstances: '',
+          reasonForApplying: ''
+        }
+      }
+      state.formData.aiGeneratedContent[action.payload.fieldName as keyof typeof state.formData.aiGeneratedContent] = action.payload.content
+      state.isDirty = true
+    },
     saveToLocalStorage: (state) => {
       try {
         const stateToSave = {
@@ -113,7 +132,13 @@ const formSlice = createSlice({
       }
     },
     clearForm: (state) => {
-      state.formData = {}
+      state.formData = {
+        aiGeneratedContent: {
+          currentFinancialSituation: '',
+          employmentCircumstances: '',
+          reasonForApplying: ''
+        }
+      }
       state.currentStep = 'personal-info'
       state.isDirty = false
       state.lastSaved = null
@@ -134,6 +159,7 @@ export const {
   updatePersonalInfo,
   updateFamilyFinancial,
   updateSituationDescription,
+  updateAIGeneratedContent,
   saveToLocalStorage,
   clearForm,
   markAsClean,

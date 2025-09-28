@@ -73,13 +73,22 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
     mode: 'onChange'
   })
 
+  // Helper function to get current situation description data with defaults
+  const getCurrentSituationData = (): FinancialAssistanceFormData['situationDescription'] => {
+    const currentData = formData.situationDescription
+    return {
+      currentFinancialSituation: currentData?.currentFinancialSituation || '',
+      employmentCircumstances: currentData?.employmentCircumstances || '',
+      reasonForApplying: currentData?.reasonForApplying || '',
+      previousAssistance: currentData?.previousAssistance || '',
+      documents: currentData?.documents || [],
+      additionalInfo: currentData?.additionalInfo || ''
+    }
+  }
+
   // Reset form when Redux state changes (e.g., after clearing form)
   useEffect(() => {
-    const newValues = formData.situationDescription || {
-      currentFinancialSituation: '',
-      employmentCircumstances: '',
-      reasonForApplying: '',      
-    }
+    const newValues = getCurrentSituationData()
     reset(newValues)
   }, [formData.situationDescription, reset])
 
@@ -90,7 +99,12 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
     const completeFormData: FinancialAssistanceFormData = {
       personalInfo: formData.personalInfo!,
       familyFinancial: formData.familyFinancial!,
-      situationDescription: data
+      situationDescription: data,
+      aiGeneratedContent: formData.aiGeneratedContent || {
+        currentFinancialSituation: '',
+        employmentCircumstances: '',
+        reasonForApplying: ''
+      }
     }
 
     try {
@@ -141,8 +155,24 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
           <div className="flex justify-end">
             <AIAssistance
               fieldName="currentFinancialSituation"
-              onAccept={(content) => setValue('currentFinancialSituation', content)}
-              onEdit={(content) => setValue('currentFinancialSituation', content)}
+              onAccept={(content) => {
+                setValue('currentFinancialSituation', content)
+                // Also update the Redux store to keep form data in sync
+                const currentData = getCurrentSituationData()
+                dispatch(updateSituationDescription({
+                  ...currentData,
+                  currentFinancialSituation: content
+                }))
+              }}
+              onEdit={(content) => {
+                setValue('currentFinancialSituation', content)
+                // Also update the Redux store to keep form data in sync
+                const currentData = getCurrentSituationData()
+                dispatch(updateSituationDescription({
+                  ...currentData,
+                  currentFinancialSituation: content
+                }))
+              }}
               onDisregard={() => {}}
               formData={formData}
             />
@@ -169,8 +199,24 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
           <div className="flex justify-end">
             <AIAssistance
               fieldName="employmentCircumstances"
-              onAccept={(content) => setValue('employmentCircumstances', content)}
-              onEdit={(content) => setValue('employmentCircumstances', content)}
+              onAccept={(content) => {
+                setValue('employmentCircumstances', content)
+                // Also update the Redux store to keep form data in sync
+                const currentData = getCurrentSituationData()
+                dispatch(updateSituationDescription({
+                  ...currentData,
+                  employmentCircumstances: content
+                }))
+              }}
+              onEdit={(content) => {
+                setValue('employmentCircumstances', content)
+                // Also update the Redux store to keep form data in sync
+                const currentData = getCurrentSituationData()
+                dispatch(updateSituationDescription({
+                  ...currentData,
+                  employmentCircumstances: content
+                }))
+              }}
               onDisregard={() => {}}
               formData={formData}
             />
@@ -197,8 +243,24 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
           <div className="flex justify-end">
             <AIAssistance
               fieldName="reasonForApplying"
-              onAccept={(content) => setValue('reasonForApplying', content)}
-              onEdit={(content) => setValue('reasonForApplying', content)}
+              onAccept={(content) => {
+                setValue('reasonForApplying', content)
+                // Also update the Redux store to keep form data in sync
+                const currentData = getCurrentSituationData()
+                dispatch(updateSituationDescription({
+                  ...currentData,
+                  reasonForApplying: content
+                }))
+              }}
+              onEdit={(content) => {
+                setValue('reasonForApplying', content)
+                // Also update the Redux store to keep form data in sync
+                const currentData = getCurrentSituationData()
+                dispatch(updateSituationDescription({
+                  ...currentData,
+                  reasonForApplying: content
+                }))
+              }}
               onDisregard={() => {}}
               formData={formData}
             />

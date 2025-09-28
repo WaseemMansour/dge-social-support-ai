@@ -1,13 +1,64 @@
-Welcome to your new TanStack app! 
+# DGE Social Support AI
 
-# Getting Started
+A financial assistance application form with AI-powered content generation.
+
+## Getting Started
 
 To run this application:
 
 ```bash
 npm install
-npm run start
+npm run dev
 ```
+
+## AI Service Configuration
+
+This application uses OpenAI's official JavaScript SDK with GPT-3.5-turbo model for AI-powered content generation. The integration is built with RTK Query for optimal state management and caching.
+
+### Features
+
+- ✅ **Official OpenAI SDK**: Uses the latest OpenAI JavaScript SDK for better reliability
+- ✅ **RTK Query Integration**: Seamless integration with Redux Toolkit Query
+- ✅ **Automatic Fallback**: Falls back to mock responses when no API key is provided
+- ✅ **Type Safety**: Full TypeScript support with proper error handling
+- ✅ **Browser Compatible**: Configured for browser usage with `dangerouslyAllowBrowser: true`
+
+### Setup Instructions
+
+1. **Install Dependencies** (already included):
+   ```bash
+   npm install openai
+   ```
+
+2. **Configure API Key**:
+   - Create a `.env.local` file in the root directory
+   - Add your OpenAI API key:
+     ```
+     VITE_OPENAI_API_KEY=your-openai-api-key-here
+     ```
+   - Restart the development server
+
+3. **Usage**:
+   - **With API Key**: The button will show "Help me write" and use real OpenAI API calls
+   - **Without API Key**: The button will show "Help me write (Demo)" and use mock responses
+
+### Technical Implementation
+
+The AI service is implemented using:
+
+- **OpenAI SDK**: Official JavaScript SDK for reliable API communication
+- **RTK Query**: Redux Toolkit Query for state management and caching
+- **Service Layer**: Clean separation of concerns with `src/services/openaiService.ts`
+- **Error Handling**: Graceful fallback to mock responses on API errors
+- **Type Safety**: Full TypeScript support with proper interfaces
+
+### API Integration Benefits
+
+- **Better Error Handling**: Official SDK provides better error messages and handling
+- **Automatic Retries**: Built-in retry logic for failed requests
+- **Type Safety**: Full TypeScript support with proper response types
+- **Future-Proof**: Easy to upgrade to newer OpenAI models and features
+- **Caching**: RTK Query provides automatic caching and state management
 
 # Building For Production
 

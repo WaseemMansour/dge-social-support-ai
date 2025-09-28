@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { generateAIContent } from '../../services/openaiService'
 import type { FinancialAssistanceFormData } from '../slices/formSlice'
 
 // Mock API response type
@@ -18,6 +19,19 @@ interface ApiError {
   }
 }
 
+// AI Service types
+export interface AIRequest {
+  prompt: string
+  fieldName: string
+  formData: Record<string, unknown>
+}
+
+export interface AIResponse {
+  content: string
+  success: boolean
+  error?: string
+}
+
 export const financialAssistanceApi = createApi({
   reducerPath: 'financialAssistanceApi',
   baseQuery: fetchBaseQuery({
@@ -28,7 +42,7 @@ export const financialAssistanceApi = createApi({
       return headers
     },
   }),
-  tagTypes: ['FinancialAssistance'],
+  tagTypes: ['FinancialAssistance', 'AIContent'],
   endpoints: (builder) => ({
     submitApplication: builder.mutation<SubmissionResponse, FinancialAssistanceFormData>({
       // Mock the API call for now
@@ -78,10 +92,30 @@ export const financialAssistanceApi = createApi({
         }
       },
     }),
+
+    // AI Content Generation endpoint using OpenAI SDK
+    generateAIContent: builder.mutation<AIResponse, AIRequest>({
+      async queryFn(request: AIRequest, _queryApi, _extraOptions) {
+        try {
+          const response = await generateAIContent(request)
+          return { data: response }
+        } catch (error) {
+          return {
+            error: {
+              status: 'FETCH_ERROR',
+              error: error instanceof Error ? error.message : 'Unknown error occurred'
+            }
+          }
+        }
+      },
+      invalidatesTags: ['AIContent'],
+    }),
   }),
 })
+
 
 export const {
   useSubmitApplicationMutation,
   useSaveDraftMutation,
+  useGenerateAIContentMutation,
 } = financialAssistanceApi
