@@ -1,7 +1,7 @@
 import { Helmet } from '@dr.pogodin/react-helmet'
 import { createFileRoute } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { LandingPage } from '../components/LandingPage'
+import { LandingPage } from '../pages/LandingPage'
 
 export const Route = createFileRoute('/')({
   component: HomePage,

@@ -45,6 +45,7 @@ export function Header({ currentPage = PageIdentifier.HOME }: HeaderProps) {
               </Link>
               <Link 
                 to={ROUTES.FINANCIAL_ASSISTANCE}
+                search={{ step: 'personal-info' }}
                 className={`px-4 py-2 text-sm font-medium transition-all duration-200 flex items-center space-x-2 rounded-md ${
                   currentPage === PageIdentifier.FINANCIAL_ASSISTANCE
                     ? 'bg-gradient-to-br from-[#C2B89C] to-gray-700 text-white shadow-lg'

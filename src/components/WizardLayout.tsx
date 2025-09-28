@@ -11,8 +11,7 @@ interface WizardLayoutProps {
 export function WizardLayout({ 
   currentStep, 
   steps, 
-  children, 
-  illustration 
+  children
 }: WizardLayoutProps) {
   return (
     <div className="min-h-screen bg-[#C2B89C]/10">
