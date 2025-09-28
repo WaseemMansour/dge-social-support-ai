@@ -155,4 +155,13 @@ code {
   .bg-warm-beige-medium {
     background-color: hsl(var(--beige) / 0.2);
   }
+  .bg-warm-cream {
+    background-color: #ffefc1;
+  }
+  .text-warm-cream {
+    color: #ffefc1;
+  }
+  .border-warm-cream {
+    border-color: #ffefc1;
+  }
 }
