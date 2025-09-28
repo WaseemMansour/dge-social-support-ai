@@ -17,6 +17,10 @@
       "main": "DGE",
       "subtitle": "SOCIAL SUPPORT"
     },
+    "navigation": {
+      "home": "Home",
+      "financialAssistance": "Financial Assistance"
+    },
     "actions": {
       "startApplication": "Start Application",
       "logIn": "Log In",

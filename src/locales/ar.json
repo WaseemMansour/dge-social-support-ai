@@ -17,6 +17,10 @@
       "main": "دائرة التنمية الحكومية",
       "subtitle": "الدعم الاجتماعي"
     },
+    "navigation": {
+      "home": "الرئيسية",
+      "financialAssistance": "المساعدة المالية"
+    },
     "actions": {
       "startApplication": "بدء الطلب",
       "logIn": "تسجيل الدخول",
