@@ -36,8 +36,8 @@ export function Header({ currentPage = PageIdentifier.HOME }: HeaderProps) {
                 to={ROUTES.HOME}
                 className={`px-4 py-2 text-sm font-medium transition-all duration-200 flex items-center space-x-2 rounded-md ${
                   currentPage === PageIdentifier.HOME
-                    ? 'bg-gray-800 text-white'
-                    : 'text-gray-800 hover:bg-gray-800 hover:text-white'
+                    ? 'bg-gradient-to-br from-[#C2B89C] to-gray-700 text-white shadow-lg'
+                    : 'text-gray-800 hover:bg-gradient-to-br hover:from-[#C2B89C] hover:to-gray-700 hover:text-white'
                 }`}
               >
                 <Home className="w-4 h-4" />
@@ -47,8 +47,8 @@ export function Header({ currentPage = PageIdentifier.HOME }: HeaderProps) {
                 to={ROUTES.FINANCIAL_ASSISTANCE}
                 className={`px-4 py-2 text-sm font-medium transition-all duration-200 flex items-center space-x-2 rounded-md ${
                   currentPage === PageIdentifier.FINANCIAL_ASSISTANCE
-                    ? 'bg-gray-800 text-white'
-                    : 'text-gray-800 hover:bg-gray-800 hover:text-white'
+                    ? 'bg-gradient-to-br from-[#C2B89C] to-gray-700 text-white shadow-lg'
+                    : 'text-gray-800 hover:bg-gradient-to-br hover:from-[#C2B89C] hover:to-gray-700 hover:text-white'
                 }`}
               >
                 <FileText className="w-4 h-4" />
