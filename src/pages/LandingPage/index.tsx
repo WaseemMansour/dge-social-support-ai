@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card"
 import { Link } from '@tanstack/react-router'
 import { CheckCircle, Clock, Shield, Users } from "lucide-react"
 import { useTranslation } from 'react-i18next'
-import { ROUTES } from '../types/navigation'
+import { ROUTES } from '../../types/navigation'
 
 export function LandingPage() {
   const { t } = useTranslation()
@@ -36,7 +36,7 @@ export function LandingPage() {
               {t('landing.hero.description')}
             </p>
             <div className="flex justify-center">
-              <Link to={ROUTES.FINANCIAL_ASSISTANCE}>
+              <Link to={ROUTES.FINANCIAL_ASSISTANCE} search={{ step: 'personal-info' }}>
                 <Button size="lg" className="bg-white text-gray-800 hover:bg-gray-100 hover:shadow-2xl hover:scale-105 active:scale-95 focus:ring-4 focus:ring-white/30 transition-all duration-200 px-8 py-3 shadow-xl">
                   {t('landing.hero.cta')}
                 </Button>
@@ -165,7 +165,7 @@ export function LandingPage() {
           <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
             {t('landing.cta.description')}
           </p>
-          <Link to={ROUTES.FINANCIAL_ASSISTANCE}>
+          <Link to={ROUTES.FINANCIAL_ASSISTANCE} search={{ step: 'personal-info' }}>
             <Button size="lg" className="bg-white text-gray-800 hover:bg-gray-100 hover:shadow-2xl hover:scale-105 active:scale-95 focus:ring-4 focus:ring-white/30 transition-all duration-200 px-8 py-3 shadow-xl">
               {t('landing.cta.button')}
             </Button>
