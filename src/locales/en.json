@@ -1,4 +1,17 @@
 {
+  "meta": {
+    "appTitle": "DGE - Department of Government Enablement",
+    "landing": {
+      "title": "DGE - Department of Government Enablement",
+      "description": "Apply for financial assistance through the Department of Government Enablement. Get the support you need with our simple, secure, and guided application process.",
+      "keywords": "financial assistance, government enablement, Abu Dhabi, support, application"
+    },
+    "financialAssistance": {
+      "title": "Financial Assistance - DGE - Department of Government Enablement",
+      "description": "Apply for financial assistance through the Department of Government Enablement. Complete your application in minutes with our guided 3-step process.",
+      "keywords": "financial assistance application, government enablement, Abu Dhabi, personal information, family financial info, situation description"
+    }
+  },
   "header": {
     "logo": {
       "main": "DGE",
@@ -65,6 +78,11 @@
   },
   "financial-assistance": {
     "title": "CREATE YOUR ACCOUNT AND START MOVING",
+    "steps": {
+      "personalInfo": "Personal Information",
+      "familyFinancial": "Family & Financial Info",
+      "situationDescription": "Situation Descriptions"
+    },
     "benefits": {
       "exclusive": "get access to member exclusive benefits",
       "experts": "get world-class expert support",

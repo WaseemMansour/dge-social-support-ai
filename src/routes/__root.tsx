@@ -1,3 +1,4 @@
+import { HelmetProvider } from '@dr.pogodin/react-helmet'
 import { TanstackDevtools } from '@tanstack/react-devtools'
 import { Outlet, createRootRoute, useLocation } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
@@ -15,7 +16,7 @@ function RootComponent() {
   const currentPage = getPageIdentifier(location.pathname)
 
   return (
-    <>
+    <HelmetProvider>
       <Header currentPage={currentPage} />
       <Outlet />
       <TanstackDevtools
@@ -29,6 +30,6 @@ function RootComponent() {
           },
         ]}
       />
-    </>
+    </HelmetProvider>
   )
 }
