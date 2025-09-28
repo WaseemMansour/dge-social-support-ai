@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils"
 import { Check } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 interface StepperProps {
   currentStep: number
@@ -8,11 +9,22 @@ interface StepperProps {
 }
 
 export function Stepper({ currentStep, steps, className }: StepperProps) {
+  const { i18n } = useTranslation()
+  const isRTL = i18n.language === 'ar'
+  
+  // Convert numbers to Arabic numerals for RTL
+  const getStepNumber = (num: number) => {
+    if (isRTL) {
+      const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
+      return num.toString().split('').map(digit => arabicNumbers[parseInt(digit)]).join('')
+    }
+    return num.toString()
+  }
   return (
-    <div className={cn("w-full py-6", className)}>
+    <div className={cn("w-full py-6", className)} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center">
-          <div className="flex items-center space-x-4">
+          <div className={cn("flex items-center", isRTL ? "space-x-reverse space-x-4" : "space-x-4")}>
             {steps.map((step, index) => {
               const stepNumber = index + 1
               const isCompleted = stepNumber < currentStep
@@ -35,7 +47,7 @@ export function Stepper({ currentStep, steps, className }: StepperProps) {
                       {isCompleted ? (
                         <Check className="w-5 h-5" />
                       ) : (
-                        <span className="text-sm font-medium">{stepNumber}</span>
+                        <span className="text-sm font-medium">{getStepNumber(stepNumber)}</span>
                       )}
                     </div>
                     <span
