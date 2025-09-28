@@ -87,6 +87,24 @@
       "familyFinancial": "معلومات العائلة والمالية",
       "situationDescription": "وصف الوضع"
     },
+    "situationFields": {
+      "currentFinancialSituation": "الوضع المالي الحالي",
+      "employmentCircumstances": "ظروف العمل", 
+      "reasonForApplying": "سبب التقديم",
+      "placeholders": {
+        "currentFinancialSituation": "اوصف وضعك المالي الحالي بالتفصيل...",
+        "employmentCircumstances": "اشرح ظروف عملك والتحديات التي تواجهها...",
+        "reasonForApplying": "اشرح سبب تقديمك للحصول على المساعدة المالية..."
+      },
+      "aiAssistance": {
+        "generate": "ساعدني في الكتابة",
+        "generating": "جاري التوليد...",
+        "accept": "قبول",
+        "edit": "تعديل",
+        "disregard": "تجاهل",
+        "prompt": "توليد المحتوى بناءً على معلوماتك الشخصية والمالية"
+      }
+    },
     "benefits": {
       "exclusive": "احصل على مزايا حصرية للأعضاء",
       "experts": "احصل على دعم خبراء عالمي المستوى",

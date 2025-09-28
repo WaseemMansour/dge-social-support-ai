@@ -87,6 +87,24 @@
       "familyFinancial": "Family & Financial Info",
       "situationDescription": "Situation Descriptions"
     },
+    "situationFields": {
+      "currentFinancialSituation": "Current Financial Situation",
+      "employmentCircumstances": "Employment Circumstances", 
+      "reasonForApplying": "Reason for Applying",
+      "placeholders": {
+        "currentFinancialSituation": "Describe your current financial situation in detail...",
+        "employmentCircumstances": "Explain your employment circumstances and challenges...",
+        "reasonForApplying": "Explain why you are applying for financial assistance..."
+      },
+      "aiAssistance": {
+        "generate": "Help me write",
+        "generating": "Generating...",
+        "accept": "Accept",
+        "edit": "Edit",
+        "disregard": "Disregard",
+        "prompt": "Generate content based on your personal and financial information"
+      }
+    },
     "benefits": {
       "exclusive": "get access to member exclusive benefits",
       "experts": "get world-class expert support",
