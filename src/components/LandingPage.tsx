@@ -7,8 +7,9 @@ import { ROUTES } from '../types/navigation'
 
 export function LandingPage() {
   const { t } = useTranslation()
+
   return (
-    <div className="min-h-screen bg-[#C2B89C]/10">
+      <div className="min-h-screen bg-[#C2B89C]/20">
       {/* Hero Section */}
       <section className="relative py-20 min-h-[80vh] flex items-center">
         {/* Background Image - Grayscale */}
@@ -36,7 +37,7 @@ export function LandingPage() {
             </p>
             <div className="flex justify-center">
               <Link to={ROUTES.FINANCIAL_ASSISTANCE}>
-                <Button size="lg" className="bg-white text-gray-800 hover:bg-gray-100 px-8 py-3 shadow-xl">
+                <Button size="lg" className="bg-white text-gray-800 hover:bg-gray-100 hover:shadow-2xl hover:scale-105 active:scale-95 focus:ring-4 focus:ring-white/30 transition-all duration-200 px-8 py-3 shadow-xl">
                   {t('landing.hero.cta')}
                 </Button>
               </Link>
@@ -47,7 +48,7 @@ export function LandingPage() {
 
       {/* How It Works Section */}
       <section className="py-16 bg-white relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#C2B89C]/5"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-warm-beige-light"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('landing.howItWorks.title')}</h2>
@@ -57,7 +58,7 @@ export function LandingPage() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-[#C2B89C]/30">
+            <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-warm-beige-medium">
               <div className="w-16 h-16 bg-gradient-to-br from-[#C2B89C] to-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <span className="text-2xl font-bold text-white">1</span>
               </div>
@@ -67,8 +68,8 @@ export function LandingPage() {
               </p>
             </Card>
 
-            <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-[#C2B89C]/30">
-              <div className="w-16 h-16 bg-gradient-to-br from-gray-600 to-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-warm-beige-medium">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#C2B89C] to-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <span className="text-2xl font-bold text-white">2</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">{t('landing.howItWorks.steps.step2.title')}</h3>
@@ -77,7 +78,7 @@ export function LandingPage() {
               </p>
             </Card>
 
-            <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-[#C2B89C]/30">
+            <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-warm-beige-medium">
               <div className="w-16 h-16 bg-gradient-to-br from-[#C2B89C] to-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <span className="text-2xl font-bold text-white">3</span>
               </div>
@@ -165,7 +166,7 @@ export function LandingPage() {
             {t('landing.cta.description')}
           </p>
           <Link to={ROUTES.FINANCIAL_ASSISTANCE}>
-            <Button size="lg" className="bg-white text-gray-800 hover:bg-gray-100 px-8 py-3">
+            <Button size="lg" className="bg-white text-gray-800 hover:bg-gray-100 hover:shadow-2xl hover:scale-105 active:scale-95 focus:ring-4 focus:ring-white/30 transition-all duration-200 px-8 py-3 shadow-xl">
               {t('landing.cta.button')}
             </Button>
           </Link>
