@@ -51,7 +51,7 @@ export function SuccessScreen({ onStartNew }: SuccessScreenProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#C2B89C]/5 to-[#C2B89C]/10 flex items-center justify-center p-4">
+    <div className="min-h-[calc(100vh-7rem)] bg-gradient-to-br from-[#C2B89C]/5 to-[#C2B89C]/10 flex items-center justify-center p-4">
       <Card className="w-full max-w-md mx-auto shadow-lg border-0 bg-white/95 backdrop-blur-sm">
         <CardHeader className="text-center pb-4">
           <div className="mx-auto mb-4 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -85,18 +85,17 @@ export function SuccessScreen({ onStartNew }: SuccessScreenProps) {
                 <span>{copied ? t('financial-assistance.success.copied') : t('financial-assistance.success.copy')}</span>
               </Button>
             </div>
+            <div>
+              <p className="text-gray-800 text-sm text-center mt-4">
+                {t('financial-assistance.success.message')}
+              </p>
+            </div>
           </div>
           
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <p className="text-green-800 text-sm text-center">
-              {t('financial-assistance.success.message')}
-            </p>
-          </div>
-          
-          <div className="space-y-3">
+           <div className="space-y-3 flex gap-2">
             <Button
               onClick={handleStartNew}
-              className="w-full bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white flex items-center justify-center space-x-2"
+              className="flex-1 bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white flex items-center justify-center space-x-2"
             >
               <RotateCcw className="w-4 h-4" />
               <span>{t('financial-assistance.success.startNew')}</span>
@@ -104,7 +103,7 @@ export function SuccessScreen({ onStartNew }: SuccessScreenProps) {
             
             <Button
               onClick={handleGoHome}
-              className="w-full bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white flex items-center justify-center space-x-2"
+              className="flex-1 bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white flex items-center justify-center space-x-2"
             >
               <Home className="w-4 h-4" />
               <span>{t('financial-assistance.success.goHome')}</span>
