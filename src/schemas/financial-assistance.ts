@@ -5,7 +5,7 @@ export const createPersonalInfoSchema = (t: (key: string) => string) => z.object
   firstName: z.string().min(1, t('financial-assistance.form.validation.firstName')),
   lastName: z.string().min(1, t('financial-assistance.form.validation.lastName')),
   nationalId: z.string().min(1, t('financial-assistance.form.validation.nationalId')).regex(/^\d+$/, t('financial-assistance.form.validation.nationalIdNumbersOnly')),
-  dateOfBirth: z.date().optional().refine((date) => date !== undefined, {
+  dateOfBirth: z.date({
     message: t('financial-assistance.form.validation.dateOfBirth'),
   }),
   gender: z.string().min(1, t('financial-assistance.form.validation.gender')),
@@ -22,7 +22,7 @@ export type PersonalInfoFormData = {
   firstName: string
   lastName: string
   nationalId: string
-  dateOfBirth?: Date
+  dateOfBirth: Date
   gender: string
   phone: string
   email: string
