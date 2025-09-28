@@ -41,6 +41,19 @@ const loadInitialState = (): FormState => {
     const savedState = localStorage.getItem('financial-assistance-form')
     if (savedState) {
       const parsed = JSON.parse(savedState)
+      
+      // Convert dateOfBirth string back to Date object if it exists
+      if (parsed.formData?.personalInfo?.dateOfBirth && typeof parsed.formData.personalInfo.dateOfBirth === 'string') {
+        const date = new Date(parsed.formData.personalInfo.dateOfBirth)
+        // Only set the date if it's valid
+        if (!isNaN(date.getTime())) {
+          parsed.formData.personalInfo.dateOfBirth = date
+        } else {
+          // Remove invalid date
+          delete parsed.formData.personalInfo.dateOfBirth
+        }
+      }
+      
       return {
         currentStep: parsed.currentStep || 'personal-info',
         formData: parsed.formData || {},

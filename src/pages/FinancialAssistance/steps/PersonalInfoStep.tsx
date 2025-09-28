@@ -73,7 +73,11 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
       firstName: formData.personalInfo?.firstName || '',
       lastName: formData.personalInfo?.lastName || '',
       nationalId: formData.personalInfo?.nationalId || '',
-      dateOfBirth: formData.personalInfo?.dateOfBirth || undefined,
+      dateOfBirth: formData.personalInfo?.dateOfBirth 
+        ? (formData.personalInfo.dateOfBirth instanceof Date 
+            ? formData.personalInfo.dateOfBirth 
+            : new Date(formData.personalInfo.dateOfBirth))
+        : undefined,
       gender: formData.personalInfo?.gender || '',
       phone: formData.personalInfo?.phone || '',
       email: formData.personalInfo?.email || '',
