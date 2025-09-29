@@ -241,6 +241,21 @@
       "submitApplication": "تقديم الطلب",
       "submittingApplication": "جاري تقديم الطلب..."
     },
+    "support": {
+      "title": "تحتاج مساعدة؟",
+      "description": "نحن هنا لدعمك خلال هذه العملية",
+      "resources": {
+        "helpline": "خط المساعدة على مدار الساعة",
+        "chat": "دعم الدردشة المباشرة",
+        "faq": "الأسئلة الشائعة",
+        "guidance": "إرشادات التقديم"
+      },
+      "contact": {
+        "phone": "اتصل بنا على: +971 2 XXX XXXX",
+        "email": "راسلنا على: support@dge.gov.ae",
+        "hours": "متاح على مدار الساعة"
+      }
+    },
     "legal": {
       "agreement": "بإنشاء حساب، فإنك توافق على",
       "privacyPolicy": "سياسة الخصوصية",
@@ -260,6 +275,7 @@
   "common": {
     "loading": "جاري التحميل...",
     "error": "حدث خطأ",
-    "success": "نجح"
+    "success": "نجح",
+    "currentStep": "الخطوة الحالية"
   }
 }

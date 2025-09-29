@@ -47,16 +47,16 @@ function buildAIPrompt(request: AIRequest): string {
   
   switch (fieldName) {
     case 'currentFinancialSituation':
-      basePrompt = `Help me describe my current financial situation. `
+      basePrompt = `I need help writing about my current financial situation for a social support application. Please help me write a compassionate, honest, and detailed description of my current financial situation. Focus on the challenges I'm facing and how they impact my daily life and family. Be empathetic and supportive in tone, as this is for a social support application. `
       break
     case 'employmentCircumstances':
-      basePrompt = `Help me describe my employment circumstances. `
+      basePrompt = `I need help describing my employment circumstances for a social support application. Please help me write a detailed and honest description of my employment circumstances, including any challenges or barriers I face in the workplace. Be understanding and supportive in tone, explaining how my work situation affects my financial stability and family wellbeing. `
       break
     case 'reasonForApplying':
-      basePrompt = `Help me explain why I am applying for financial assistance. `
+      basePrompt = `I need help explaining why I'm applying for social support assistance. Please help me write a heartfelt and compelling explanation of why I need social support assistance. Focus on the specific challenges I'm facing, how they impact my family, and how this assistance would help improve our situation. Be empathetic and genuine in tone. `
       break
     default:
-      basePrompt = `Help me describe my situation. `
+      basePrompt = `I need help writing content for my social support application. Please provide a compassionate, honest, and detailed description that would be appropriate for a social support application. `
   }
   
   // Add context from form data

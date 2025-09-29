@@ -241,6 +241,21 @@
       "submitApplication": "Submit Application",
       "submittingApplication": "Submitting Application..."
     },
+    "support": {
+      "title": "Need Help?",
+      "description": "We're here to support you through this process",
+      "resources": {
+        "helpline": "24/7 Support Helpline",
+        "chat": "Live Chat Support",
+        "faq": "Frequently Asked Questions",
+        "guidance": "Application Guidance"
+      },
+      "contact": {
+        "phone": "Call us at: +971 2 XXX XXXX",
+        "email": "Email us at: support@dge.gov.ae",
+        "hours": "Available 24/7"
+      }
+    },
     "legal": {
       "agreement": "By creating an account, you agree to our",
       "privacyPolicy": "Privacy Policy",
@@ -260,6 +275,7 @@
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
-    "success": "Success"
+    "success": "Success",
+    "currentStep": "Current Step"
   }
 }
