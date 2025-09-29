@@ -264,15 +264,16 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
               <Select 
                 value={field.value} 
                 onValueChange={field.onChange}
+                data-testid="gender-select"
               >
-                <SelectTrigger className="w-full" onBlur={field.onBlur}>
+                <SelectTrigger className="w-full" onBlur={field.onBlur} data-testid="gender-select-trigger">
                   <SelectValue placeholder={t('financial-assistance.form.select.gender')} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="male">{t('financial-assistance.form.genders.male')}</SelectItem>
-                  <SelectItem value="female">{t('financial-assistance.form.genders.female')}</SelectItem>
-                  <SelectItem value="other">{t('financial-assistance.form.genders.other')}</SelectItem>
-                  <SelectItem value="prefer-not-to-say">{t('financial-assistance.form.genders.preferNotToSay')}</SelectItem>
+                <SelectContent data-testid="gender-select-content">
+                  <SelectItem value="male" data-testid="gender-option-male">{t('financial-assistance.form.genders.male')}</SelectItem>
+                  <SelectItem value="female" data-testid="gender-option-female">{t('financial-assistance.form.genders.female')}</SelectItem>
+                  <SelectItem value="other" data-testid="gender-option-other">{t('financial-assistance.form.genders.other')}</SelectItem>
+                  <SelectItem value="prefer-not-to-say" data-testid="gender-option-prefer-not-to-say">{t('financial-assistance.form.genders.preferNotToSay')}</SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -408,18 +409,19 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
               <Select 
                 value={field.value} 
                 onValueChange={field.onChange}
+                data-testid="country-select"
               >
-                <SelectTrigger className="w-full" onBlur={field.onBlur}>
+                <SelectTrigger className="w-full" onBlur={field.onBlur} data-testid="country-select-trigger">
                   <SelectValue placeholder={t('financial-assistance.form.select.country')} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="AE">{t('financial-assistance.form.countries.AE')}</SelectItem>
-                  <SelectItem value="SA">{t('financial-assistance.form.countries.SA')}</SelectItem>
-                  <SelectItem value="KW">{t('financial-assistance.form.countries.KW')}</SelectItem>
-                  <SelectItem value="QA">{t('financial-assistance.form.countries.QA')}</SelectItem>
-                  <SelectItem value="BH">{t('financial-assistance.form.countries.BH')}</SelectItem>
-                  <SelectItem value="OM">{t('financial-assistance.form.countries.OM')}</SelectItem>
-                  <SelectItem value="other">{t('financial-assistance.form.countries.other')}</SelectItem>
+                <SelectContent data-testid="country-select-content">
+                  <SelectItem value="AE" data-testid="country-option-ae">{t('financial-assistance.form.countries.AE')}</SelectItem>
+                  <SelectItem value="SA" data-testid="country-option-sa">{t('financial-assistance.form.countries.SA')}</SelectItem>
+                  <SelectItem value="KW" data-testid="country-option-kw">{t('financial-assistance.form.countries.KW')}</SelectItem>
+                  <SelectItem value="QA" data-testid="country-option-qa">{t('financial-assistance.form.countries.QA')}</SelectItem>
+                  <SelectItem value="BH" data-testid="country-option-bh">{t('financial-assistance.form.countries.BH')}</SelectItem>
+                  <SelectItem value="OM" data-testid="country-option-om">{t('financial-assistance.form.countries.OM')}</SelectItem>
+                  <SelectItem value="other" data-testid="country-option-other">{t('financial-assistance.form.countries.other')}</SelectItem>
                 </SelectContent>
               </Select>
             )}

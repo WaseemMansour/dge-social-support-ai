@@ -141,15 +141,19 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
             name="maritalStatus"
             control={control}
             render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-full">
+              <Select 
+                onValueChange={field.onChange} 
+                value={field.value}
+                data-testid="marital-status-select"
+              >
+                <SelectTrigger className="w-full" data-testid="marital-status-select-trigger">
                   <SelectValue placeholder="Select marital status" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="single">{t('financial-assistance.options.maritalStatus.single')}</SelectItem>
-                  <SelectItem value="married">{t('financial-assistance.options.maritalStatus.married')}</SelectItem>
-                  <SelectItem value="divorced">{t('financial-assistance.options.maritalStatus.divorced')}</SelectItem>
-                  <SelectItem value="widowed">{t('financial-assistance.options.maritalStatus.widowed')}</SelectItem>
+                <SelectContent data-testid="marital-status-select-content">
+                  <SelectItem value="single" data-testid="marital-status-option-single">{t('financial-assistance.options.maritalStatus.single')}</SelectItem>
+                  <SelectItem value="married" data-testid="marital-status-option-married">{t('financial-assistance.options.maritalStatus.married')}</SelectItem>
+                  <SelectItem value="divorced" data-testid="marital-status-option-divorced">{t('financial-assistance.options.maritalStatus.divorced')}</SelectItem>
+                  <SelectItem value="widowed" data-testid="marital-status-option-widowed">{t('financial-assistance.options.maritalStatus.widowed')}</SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -169,15 +173,19 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
             name="housingStatus"
             control={control}
             render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-full">
+              <Select 
+                onValueChange={field.onChange} 
+                value={field.value}
+                data-testid="housing-status-select"
+              >
+                <SelectTrigger className="w-full" data-testid="housing-status-select-trigger">
                   <SelectValue placeholder="Select housing status" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="owned">{t('financial-assistance.options.housingStatus.owned')}</SelectItem>
-                  <SelectItem value="rented">{t('financial-assistance.options.housingStatus.rented')}</SelectItem>
-                  <SelectItem value="family">{t('financial-assistance.options.housingStatus.family')}</SelectItem>
-                  <SelectItem value="other">{t('financial-assistance.options.housingStatus.other')}</SelectItem>
+                <SelectContent data-testid="housing-status-select-content">
+                  <SelectItem value="owned" data-testid="housing-status-option-owned">{t('financial-assistance.options.housingStatus.owned')}</SelectItem>
+                  <SelectItem value="rented" data-testid="housing-status-option-rented">{t('financial-assistance.options.housingStatus.rented')}</SelectItem>
+                  <SelectItem value="family" data-testid="housing-status-option-family">{t('financial-assistance.options.housingStatus.family')}</SelectItem>
+                  <SelectItem value="other" data-testid="housing-status-option-other">{t('financial-assistance.options.housingStatus.other')}</SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -248,17 +256,21 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
             name="employmentStatus"
             control={control}
             render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="w-full" onBlur={field.onBlur}>
+              <Select 
+                value={field.value} 
+                onValueChange={field.onChange}
+                data-testid="employment-status-select"
+              >
+                <SelectTrigger className="w-full" onBlur={field.onBlur} data-testid="employment-status-select-trigger">
                   <SelectValue placeholder="Select employment status" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="employed">{t('financial-assistance.options.employmentStatus.employed')}</SelectItem>
-                  <SelectItem value="unemployed">{t('financial-assistance.options.employmentStatus.unemployed')}</SelectItem>
-                  <SelectItem value="self-employed">{t('financial-assistance.options.employmentStatus.self-employed')}</SelectItem>
-                  <SelectItem value="student">{t('financial-assistance.options.employmentStatus.student')}</SelectItem>
-                  <SelectItem value="retired">{t('financial-assistance.options.employmentStatus.retired')}</SelectItem>
-                  <SelectItem value="other">{t('financial-assistance.options.employmentStatus.other')}</SelectItem>
+                <SelectContent data-testid="employment-status-select-content">
+                  <SelectItem value="employed" data-testid="employment-status-option-employed">{t('financial-assistance.options.employmentStatus.employed')}</SelectItem>
+                  <SelectItem value="unemployed" data-testid="employment-status-option-unemployed">{t('financial-assistance.options.employmentStatus.unemployed')}</SelectItem>
+                  <SelectItem value="self-employed" data-testid="employment-status-option-self-employed">{t('financial-assistance.options.employmentStatus.self-employed')}</SelectItem>
+                  <SelectItem value="student" data-testid="employment-status-option-student">{t('financial-assistance.options.employmentStatus.student')}</SelectItem>
+                  <SelectItem value="retired" data-testid="employment-status-option-retired">{t('financial-assistance.options.employmentStatus.retired')}</SelectItem>
+                  <SelectItem value="other" data-testid="employment-status-option-other">{t('financial-assistance.options.employmentStatus.other')}</SelectItem>
                 </SelectContent>
               </Select>
             )}
