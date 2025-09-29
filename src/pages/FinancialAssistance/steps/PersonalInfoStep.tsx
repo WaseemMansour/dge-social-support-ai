@@ -97,7 +97,7 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
       nationalId: formData.personalInfo?.nationalId || '',
       dateOfBirth: formData.personalInfo?.dateOfBirth 
         ? new Date(formData.personalInfo.dateOfBirth)
-        : new Date(),
+        : undefined,
       gender: formData.personalInfo?.gender || '',
       phone: formData.personalInfo?.phone || '',
       email: formData.personalInfo?.email || '',
@@ -123,7 +123,7 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
       nationalId: formData.personalInfo?.nationalId || '',
       dateOfBirth: formData.personalInfo?.dateOfBirth 
         ? new Date(formData.personalInfo.dateOfBirth)
-        : new Date(),
+        : undefined,
       gender: formData.personalInfo?.gender || '',
       phone: formData.personalInfo?.phone || '',
       email: formData.personalInfo?.email || '',

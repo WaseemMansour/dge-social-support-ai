@@ -66,6 +66,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
     register,
     control,
     reset,
+    trigger,
     formState: { errors, isSubmitting, touchedFields, isSubmitted }
   } = useForm<FamilyFinancialFormData>({
     resolver: zodResolver(schema),
@@ -84,6 +85,12 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
     },
     mode: 'onChange'
   })
+
+  // Update resolver when language changes to refresh validation messages
+  useEffect(() => {
+    // Force re-validation with new schema
+    trigger()
+  }, [i18n.language, trigger])
 
   // Reset form when Redux state changes (e.g., after clearing form)
   useEffect(() => {

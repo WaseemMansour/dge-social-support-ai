@@ -69,6 +69,7 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
     register,
     setValue,
     reset,
+    trigger,
     formState: { errors, isSubmitting: isFormSubmitting, touchedFields, isSubmitted }
   } = useForm<SituationDescriptionFormData>({
     resolver: zodResolver(schema),
@@ -79,6 +80,12 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
     },
     mode: 'onChange'
   })
+
+  // Update resolver when language changes to refresh validation messages
+  useEffect(() => {
+    // Force re-validation with new schema
+    trigger()
+  }, [i18n.language, trigger])
 
   // Helper function to get current situation description data with defaults
   const getCurrentSituationData = (): SituationDescriptionFormData => {
@@ -119,8 +126,10 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
       console.log('Application submitted successfully:', result)
       // Mark submission as successful
       dispatch(markSubmissionSuccess())
-      // Navigate to success screen
-      onSubmissionSuccess()
+      // Small delay to ensure Redux state is updated before navigation
+      setTimeout(() => {
+        onSubmissionSuccess()
+      }, 100)
     } catch (error) {
       console.error('Failed to submit application:', error)
       // Error is already handled by RTK Query

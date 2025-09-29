@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { WizardLayout } from '../../components/WizardLayout'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import type { StepName } from '../../store/slices/formSlice'
-import { clearForm, saveToLocalStorage, setCurrentStep } from '../../store/slices/formSlice'
+import { saveToLocalStorage, setCurrentStep } from '../../store/slices/formSlice'
 import { FamilyFinancialStep } from './steps/FamilyFinancialStep'
 import { PersonalInfoStep } from './steps/PersonalInfoStep'
 import { SituationDescriptionStep } from './steps/SituationDescriptionStep'
@@ -49,13 +49,7 @@ export function FinancialAssistanceWizard({ currentStep }: FinancialAssistanceWi
     }
   }, [formData, isDirty, dispatch])
 
-  // Clear form state when navigating away from success screen
-  useEffect(() => {
-    // If we're leaving the success screen, clear the form
-    if (currentStep !== 'success' && hasSubmittedSuccessfully) {
-      dispatch(clearForm())
-    }
-  }, [currentStep, hasSubmittedSuccessfully, dispatch])
+  // Note: Clearing form on unmount is handled in route component
 
   // Navigation helpers
   const goToStep = (step: StepName) => {
@@ -128,12 +122,7 @@ export function FinancialAssistanceWizard({ currentStep }: FinancialAssistanceWi
     }
   }
 
-  // Access control: Success page should only be accessible after successful submission
-  if (currentStep === 'success' && !hasSubmittedSuccessfully) {
-    // Redirect to first step if trying to access success page without successful submission
-    goToStep('personal-info')
-    return null
-  }
+  // Note: Allow navigating to success screen immediately after submission
 
   // Don't show stepper for success screen
   if (currentStep === 'success') {
