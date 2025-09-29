@@ -18,7 +18,7 @@ export function FinancialAssistanceWizard({ currentStep }: FinancialAssistanceWi
   const { t } = useTranslation()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { formData, isDirty, hasSubmittedSuccessfully } = useAppSelector((state) => state.form)
+  const { formData, isDirty } = useAppSelector((state) => state.form)
 
   const steps = [
     t('financial-assistance.steps.personalInfo'),
