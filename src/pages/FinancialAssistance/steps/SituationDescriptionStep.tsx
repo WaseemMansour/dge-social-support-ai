@@ -1,5 +1,6 @@
-import { ChevronLeft } from 'lucide-react'
-import { useEffect } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { AIAssistance } from '../../../components/AIAssistance'
@@ -7,6 +8,7 @@ import { Button } from '../../../components/ui/button'
 import { Label } from '../../../components/ui/label'
 import { Textarea } from '../../../components/ui/textarea'
 import { cn } from '../../../lib/utils'
+import { createSituationDescriptionSchema, type SituationDescriptionFormData } from '../../../schemas/financial-assistance'
 import { useSubmitApplicationMutation } from '../../../store/api/financialAssistanceApi'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { markSubmissionSuccess, updateSituationDescription, type FinancialAssistanceFormData } from '../../../store/slices/formSlice'
@@ -57,6 +59,9 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
   const { formData } = useAppSelector((state) => state.form)
   const [submitApplication, { isLoading: isSubmitting, error: submitError }] = useSubmitApplicationMutation()
 
+  // Create schema with current language
+  const schema = useMemo(() => createSituationDescriptionSchema(t), [t])
+
   // React Hook Form setup
   const {
     handleSubmit,
@@ -64,7 +69,8 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
     setValue,
     reset,
     formState: { errors, isSubmitting: isFormSubmitting, touchedFields, isSubmitted }
-  } = useForm<FinancialAssistanceFormData['situationDescription']>({
+  } = useForm<SituationDescriptionFormData>({
+    resolver: zodResolver(schema),
     defaultValues: formData.situationDescription || {
       currentFinancialSituation: '',
       employmentCircumstances: '',
@@ -74,7 +80,7 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
   })
 
   // Helper function to get current situation description data with defaults
-  const getCurrentSituationData = (): FinancialAssistanceFormData['situationDescription'] => {
+  const getCurrentSituationData = (): SituationDescriptionFormData => {
     const currentData = formData.situationDescription
     return {
       currentFinancialSituation: currentData?.currentFinancialSituation || '',
@@ -129,7 +135,7 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
           {t('financial-assistance.steps.situationDescription')}
         </h1>
         <p className={cn("text-gray-600 mb-6", isRTL && "text-right")}>
-          Please describe your current situation and the support you need.
+          {t('financial-assistance.descriptions.situationDescription')}
         </p>
         <div className={cn("w-24 h-1 bg-[#C2B89C] rounded-full mb-6", isRTL && "ml-auto")}></div>
       </div>
@@ -146,7 +152,7 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
             className="w-full"
           >
             <Textarea 
-              {...register('currentFinancialSituation', { required: 'Current financial situation is required' })}
+              {...register('currentFinancialSituation')}
               placeholder={t('financial-assistance.situationFields.placeholders.currentFinancialSituation')}
               rows={4}
               className="w-full"
@@ -190,7 +196,7 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
             className="w-full"
           >
             <Textarea 
-              {...register('employmentCircumstances', { required: 'Employment circumstances is required' })}
+              {...register('employmentCircumstances')}
               placeholder={t('financial-assistance.situationFields.placeholders.employmentCircumstances')}
               rows={4}
               className="w-full"
@@ -234,7 +240,7 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
             className="w-full"
           >
             <Textarea 
-              {...register('reasonForApplying', { required: 'Reason for applying is required' })}
+              {...register('reasonForApplying')}
               placeholder={t('financial-assistance.situationFields.placeholders.reasonForApplying')}
               rows={4}
               className="w-full"
@@ -287,15 +293,15 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
           onClick={onPrevious}
           className="px-8 flex items-center space-x-2 hover:bg-gray-50 hover:border-gray-400"
         >
-          <ChevronLeft className="w-4 h-4" />
-          <span>Previous</span>
+          {isRTL ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          <span>{t('financial-assistance.navigation.previous')}</span>
         </Button>
         <Button 
           type="submit"
           disabled={isSubmittingForm}
           className="bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white px-8"
         >
-          {isSubmittingForm ? 'Submitting Application...' : 'Submit Application'}
+          {isSubmittingForm ? t('financial-assistance.buttons.submittingApplication') : t('financial-assistance.buttons.submitApplication')}
         </Button>
       </div>
     </form>

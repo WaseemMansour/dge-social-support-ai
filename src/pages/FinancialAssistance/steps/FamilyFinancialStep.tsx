@@ -115,7 +115,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
           {t('financial-assistance.steps.familyFinancial')}
         </h1>
         <p className={cn("text-gray-600 mb-6", isRTL && "text-right")}>
-          Please provide information about your financial situation and family circumstances.
+          {t('financial-assistance.descriptions.familyFinancial')}
         </p>
         <div className={cn("w-24 h-1 bg-[#C2B89C] rounded-full mb-6", isRTL && "ml-auto")}></div>
       </div>
@@ -123,7 +123,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Marital Status */}
         <FormField 
-          label="Marital Status" 
+          label={t('financial-assistance.familyFinancialFields.maritalStatus')} 
           required 
           error={errors.maritalStatus?.message}
           touched={!!touchedFields.maritalStatus}
@@ -139,10 +139,10 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
                   <SelectValue placeholder="Select marital status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="single">Single</SelectItem>
-                  <SelectItem value="married">Married</SelectItem>
-                  <SelectItem value="divorced">Divorced</SelectItem>
-                  <SelectItem value="widowed">Widowed</SelectItem>
+                  <SelectItem value="single">{t('financial-assistance.options.maritalStatus.single')}</SelectItem>
+                  <SelectItem value="married">{t('financial-assistance.options.maritalStatus.married')}</SelectItem>
+                  <SelectItem value="divorced">{t('financial-assistance.options.maritalStatus.divorced')}</SelectItem>
+                  <SelectItem value="widowed">{t('financial-assistance.options.maritalStatus.widowed')}</SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -151,7 +151,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
 
         {/* Housing Status */}
         <FormField 
-          label="Housing Status" 
+          label={t('financial-assistance.familyFinancialFields.housingStatus')} 
           required 
           error={errors.housingStatus?.message}
           touched={!!touchedFields.housingStatus}
@@ -167,10 +167,10 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
                   <SelectValue placeholder="Select housing status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="owned">Owned</SelectItem>
-                  <SelectItem value="rented">Rented</SelectItem>
-                  <SelectItem value="family">Living with Family</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="owned">{t('financial-assistance.options.housingStatus.owned')}</SelectItem>
+                  <SelectItem value="rented">{t('financial-assistance.options.housingStatus.rented')}</SelectItem>
+                  <SelectItem value="family">{t('financial-assistance.options.housingStatus.family')}</SelectItem>
+                  <SelectItem value="other">{t('financial-assistance.options.housingStatus.other')}</SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -179,7 +179,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
 
         {/* Monthly Income */}
         <FormField 
-          label="Monthly Income (AED)" 
+          label={t('financial-assistance.familyFinancialFields.monthlyIncome')} 
           required 
           error={errors.monthlyIncome?.message}
           touched={!!touchedFields.monthlyIncome}
@@ -196,7 +196,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
 
         {/* Monthly Expenses */}
         <FormField 
-          label="Monthly Expenses (AED)" 
+          label={t('financial-assistance.familyFinancialFields.monthlyExpenses')} 
           required 
           error={errors.monthlyExpenses?.message}
           touched={!!touchedFields.monthlyExpenses}
@@ -213,7 +213,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
 
         {/* Number of Dependents */}
         <FormField 
-          label="Number of Dependents" 
+          label={t('financial-assistance.familyFinancialFields.dependents')} 
           required 
           error={errors.dependents?.message}
           touched={!!touchedFields.dependents}
@@ -230,7 +230,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
 
         {/* Employment Status */}
         <FormField 
-          label="Employment Status" 
+          label={t('financial-assistance.familyFinancialFields.employmentStatus')} 
           required 
           error={errors.employmentStatus?.message}
           touched={!!touchedFields.employmentStatus}
@@ -246,12 +246,12 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
                   <SelectValue placeholder="Select employment status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="employed">Employed</SelectItem>
-                  <SelectItem value="unemployed">Unemployed</SelectItem>
-                  <SelectItem value="self-employed">Self-employed</SelectItem>
-                  <SelectItem value="student">Student</SelectItem>
-                  <SelectItem value="retired">Retired</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="employed">{t('financial-assistance.options.employmentStatus.employed')}</SelectItem>
+                  <SelectItem value="unemployed">{t('financial-assistance.options.employmentStatus.unemployed')}</SelectItem>
+                  <SelectItem value="self-employed">{t('financial-assistance.options.employmentStatus.self-employed')}</SelectItem>
+                  <SelectItem value="student">{t('financial-assistance.options.employmentStatus.student')}</SelectItem>
+                  <SelectItem value="retired">{t('financial-assistance.options.employmentStatus.retired')}</SelectItem>
+                  <SelectItem value="other">{t('financial-assistance.options.employmentStatus.other')}</SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -260,7 +260,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
 
         {/* Employer Name */}
         <FormField 
-          label="Employer Name" 
+          label={t('financial-assistance.familyFinancialFields.employerName')} 
           required
           error={errors.employerName?.message}
           touched={!!touchedFields.employerName}
@@ -276,7 +276,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
 
         {/* Job Title */}
         <FormField 
-          label="Job Title" 
+          label={t('financial-assistance.familyFinancialFields.jobTitle')} 
           required
           error={errors.jobTitle?.message}
           touched={!!touchedFields.jobTitle}
@@ -292,7 +292,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
 
         {/* Work Experience */}
         <FormField 
-          label="Work Experience (Years)" 
+          label={t('financial-assistance.familyFinancialFields.workExperience')} 
           required
           error={errors.workExperience?.message}
           touched={!!touchedFields.workExperience}
@@ -309,7 +309,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
 
         {/* Additional Income */}
         <FormField 
-          label="Additional Income (AED)" 
+          label={t('financial-assistance.familyFinancialFields.additionalIncome')} 
           error={errors.additionalIncome?.message}
           touched={!!touchedFields.additionalIncome}
           isSubmitted={isSubmitted}
@@ -325,7 +325,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
 
         {/* Additional Income Source */}
         <FormField 
-          label="Additional Income Source" 
+          label={t('financial-assistance.familyFinancialFields.additionalIncomeSource')} 
           error={errors.additionalIncomeSource?.message}
           touched={!!touchedFields.additionalIncomeSource}
           isSubmitted={isSubmitted}
@@ -347,16 +347,16 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
           onClick={onPrevious}
           className="px-8 flex items-center space-x-2 hover:bg-gray-50 hover:border-gray-400"
         >
-          <ChevronLeft className="w-4 h-4" />
-          <span>Previous</span>
+          {isRTL ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          <span>{t('financial-assistance.navigation.previous')}</span>
         </Button>
         <Button 
           type="submit"
           disabled={isSubmitting}
           className="bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white px-8 flex items-center space-x-2"
         >
-          <span>{isSubmitting ? 'Processing...' : 'Continue to Next Step'}</span>
-          <ChevronRight className="w-4 h-4" />
+          <span>{isSubmitting ? t('common.loading') : t('financial-assistance.navigation.continue')}</span>
+          {isRTL ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
         </Button>
       </div>
     </form>

@@ -1,4 +1,5 @@
-import { ChevronRight } from 'lucide-react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -9,14 +10,9 @@ import { Label } from '../../../components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select'
 import { Textarea } from '../../../components/ui/textarea'
 import { cn } from '../../../lib/utils'
-import { createPersonalInfoSchema, type PersonalInfoFormData } from '../../../schemas/financial-assistance'
+import { createPersonalInfoFormSchema, type PersonalInfoFormData, type PersonalInfoFormDataWithDate } from '../../../schemas/financial-assistance'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { updatePersonalInfo } from '../../../store/slices/formSlice'
-
-// Form data type with Date objects for the DatePicker component
-type PersonalInfoFormDataWithDate = Omit<PersonalInfoFormData, 'dateOfBirth'> & {
-  dateOfBirth: Date | undefined
-}
 
 interface PersonalInfoStepProps {
   onNext: () => void
@@ -63,7 +59,7 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
   const { formData } = useAppSelector((state) => state.form)
 
   // Create schema with current language
-  const schema = useMemo(() => createPersonalInfoSchema(t), [t])
+  const schema = useMemo(() => createPersonalInfoFormSchema(t), [t])
 
   // React Hook Form setup
   const {
@@ -73,14 +69,14 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
     reset,
     formState: { errors, isSubmitting, touchedFields, isSubmitted }
   } = useForm<PersonalInfoFormDataWithDate>({
-    // Manual validation - we'll validate in onSubmit
+    resolver: zodResolver(schema),
     defaultValues: {
       firstName: formData.personalInfo?.firstName || '',
       lastName: formData.personalInfo?.lastName || '',
       nationalId: formData.personalInfo?.nationalId || '',
       dateOfBirth: formData.personalInfo?.dateOfBirth 
         ? new Date(formData.personalInfo.dateOfBirth)
-        : undefined,
+        : new Date(),
       gender: formData.personalInfo?.gender || '',
       phone: formData.personalInfo?.phone || '',
       email: formData.personalInfo?.email || '',
@@ -106,7 +102,7 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
       nationalId: formData.personalInfo?.nationalId || '',
       dateOfBirth: formData.personalInfo?.dateOfBirth 
         ? new Date(formData.personalInfo.dateOfBirth)
-        : undefined,
+        : new Date(),
       gender: formData.personalInfo?.gender || '',
       phone: formData.personalInfo?.phone || '',
       email: formData.personalInfo?.email || '',
@@ -118,22 +114,14 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
     reset(newValues)
   }, [formData.personalInfo, reset])
 
-  const onSubmit = async (data: PersonalInfoFormDataWithDate) => {
-    // Convert Date object to ISO string for validation and Redux storage
-    const dataForValidation: PersonalInfoFormData = {
+  const onSubmit = (data: PersonalInfoFormDataWithDate) => {
+    // Convert Date object to ISO string for Redux storage
+    const dataForRedux: PersonalInfoFormData = {
       ...data,
-      dateOfBirth: data.dateOfBirth ? data.dateOfBirth.toISOString() : ''
+      dateOfBirth: data.dateOfBirth.toISOString()
     }
     
-    // Validate using the original schema
-    try {
-      schema.parse(dataForValidation)
-    } catch (error) {
-      console.error('Validation error:', error)
-      return // Don't proceed if validation fails
-    }
-    
-    dispatch(updatePersonalInfo(dataForValidation))
+    dispatch(updatePersonalInfo(dataForRedux))
     onNext()
   }
 
@@ -424,8 +412,8 @@ export function PersonalInfoStep({ onNext }: PersonalInfoStepProps) {
           disabled={isSubmitting}
           className="bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white px-8 flex items-center space-x-2"
         >
-          <span>{isSubmitting ? 'Processing...' : 'Continue to Next Step'}</span>
-          <ChevronRight className="w-4 h-4" />
+          <span>{isSubmitting ? t('common.loading') : t('financial-assistance.navigation.continue')}</span>
+          {isRTL ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
         </Button>
       </div>
     </form>

@@ -30,6 +30,28 @@ export type PersonalInfoFormData = {
   country: string
 }
 
+// Type for the form with Date objects (for DatePicker component)
+export type PersonalInfoFormDataWithDate = Omit<PersonalInfoFormData, 'dateOfBirth'> & {
+  dateOfBirth: Date
+}
+
+// Create a schema for the form that accepts Date objects
+export const createPersonalInfoFormSchema = (t: (key: string) => string) => z.object({
+  firstName: z.string().min(1, t('financial-assistance.form.validation.firstName')),
+  lastName: z.string().min(1, t('financial-assistance.form.validation.lastName')),
+  nationalId: z.string().min(1, t('financial-assistance.form.validation.nationalId')).regex(/^\d+$/, t('financial-assistance.form.validation.nationalIdNumbersOnly')),
+  dateOfBirth: z.date({
+    message: t('financial-assistance.form.validation.dateOfBirth'),
+  }),
+  gender: z.string().min(1, t('financial-assistance.form.validation.gender')),
+  phone: z.string().min(1, t('financial-assistance.form.validation.phone')).regex(/^\d+$/, t('financial-assistance.form.validation.phoneNumbersOnly')),
+  email: z.string().min(1, t('financial-assistance.form.validation.emailRequired')).email(t('financial-assistance.form.validation.email')),
+  address: z.string().min(1, t('financial-assistance.form.validation.address')),
+  city: z.string().min(1, t('financial-assistance.form.validation.city')),
+  state: z.string().min(1, t('financial-assistance.form.validation.state')),
+  country: z.string().min(1, t('financial-assistance.form.validation.country')),
+})
+
 // Create a function that returns the family financial schema with i18n messages
 export const createFamilyFinancialSchema = (t: (key: string) => string) => z.object({
   maritalStatus: z.string().min(1, t('financial-assistance.form.validation.maritalStatus')),
@@ -58,4 +80,23 @@ export type FamilyFinancialFormData = {
   workExperience: string
   additionalIncome?: string
   additionalIncomeSource?: string
+}
+
+// Create a function that returns the situation description schema with i18n messages
+export const createSituationDescriptionSchema = (t: (key: string) => string) => z.object({
+  currentFinancialSituation: z.string().min(1, t('financial-assistance.form.validation.currentFinancialSituation')),
+  employmentCircumstances: z.string().min(1, t('financial-assistance.form.validation.employmentCircumstances')),
+  reasonForApplying: z.string().min(1, t('financial-assistance.form.validation.reasonForApplying')),
+  previousAssistance: z.string().optional(),
+  documents: z.array(z.string()).optional(),
+  additionalInfo: z.string().optional(),
+})
+
+export type SituationDescriptionFormData = {
+  currentFinancialSituation: string
+  employmentCircumstances: string
+  reasonForApplying: string
+  previousAssistance?: string
+  documents?: string[]
+  additionalInfo?: string
 }

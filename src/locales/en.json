@@ -87,6 +87,45 @@
       "familyFinancial": "Family & Financial Info",
       "situationDescription": "Situation Descriptions"
     },
+    "descriptions": {
+      "situationDescription": "Please describe your current situation and the support you need.",
+      "familyFinancial": "Please provide information about your financial situation and family circumstances."
+    },
+    "familyFinancialFields": {
+      "maritalStatus": "Marital Status",
+      "dependents": "Number of Dependents",
+      "employmentStatus": "Employment Status",
+      "monthlyIncome": "Monthly Income (AED)",
+      "housingStatus": "Housing Status",
+      "monthlyExpenses": "Monthly Expenses (AED)",
+      "employerName": "Employer Name",
+      "jobTitle": "Job Title",
+      "workExperience": "Work Experience (Years)",
+      "additionalIncome": "Additional Income (AED)",
+      "additionalIncomeSource": "Additional Income Source"
+    },
+    "options": {
+      "maritalStatus": {
+        "single": "Single",
+        "married": "Married",
+        "divorced": "Divorced",
+        "widowed": "Widowed"
+      },
+      "employmentStatus": {
+        "employed": "Employed",
+        "unemployed": "Unemployed",
+        "self-employed": "Self-Employed",
+        "student": "Student",
+        "retired": "Retired",
+        "other": "Other"
+      },
+      "housingStatus": {
+        "owned": "Owned",
+        "rented": "Rented",
+        "family": "Living with Family",
+        "other": "Other"
+      }
+    },
     "situationFields": {
       "currentFinancialSituation": "Current Financial Situation",
       "employmentCircumstances": "Employment Circumstances", 
@@ -187,8 +226,20 @@
         "monthlyExpenses": "Monthly expenses is required",
         "employerName": "Employer name is required",
         "jobTitle": "Job title is required",
-        "workExperience": "Work experience is required"
+        "workExperience": "Work experience is required",
+        "currentFinancialSituation": "Current financial situation is required",
+        "employmentCircumstances": "Employment circumstances is required",
+        "reasonForApplying": "Reason for applying is required"
       }
+    },
+    "navigation": {
+      "previous": "Previous",
+      "next": "Next",
+      "continue": "Continue"
+    },
+    "buttons": {
+      "submitApplication": "Submit Application",
+      "submittingApplication": "Submitting Application..."
     },
     "legal": {
       "agreement": "By creating an account, you agree to our",

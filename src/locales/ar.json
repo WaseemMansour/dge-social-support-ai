@@ -87,6 +87,45 @@
       "familyFinancial": "معلومات العائلة والمالية",
       "situationDescription": "وصف الوضع"
     },
+    "descriptions": {
+      "situationDescription": "يرجى وصف وضعك الحالي والدعم الذي تحتاجه.",
+      "familyFinancial": "يرجى تقديم معلومات حول وضعك المالي وظروف عائلتك."
+    },
+    "familyFinancialFields": {
+      "maritalStatus": "الحالة الاجتماعية",
+      "dependents": "عدد المعالين",
+      "employmentStatus": "حالة التوظيف",
+      "monthlyIncome": "الدخل الشهري (درهم)",
+      "housingStatus": "حالة السكن",
+      "monthlyExpenses": "المصروفات الشهرية (درهم)",
+      "employerName": "اسم صاحب العمل",
+      "jobTitle": "المسمى الوظيفي",
+      "workExperience": "الخبرة العملية (سنوات)",
+      "additionalIncome": "دخل إضافي (درهم)",
+      "additionalIncomeSource": "مصدر الدخل الإضافي"
+    },
+    "options": {
+      "maritalStatus": {
+        "single": "أعزب",
+        "married": "متزوج",
+        "divorced": "مطلق",
+        "widowed": "أرمل"
+      },
+      "employmentStatus": {
+        "employed": "موظف",
+        "unemployed": "عاطل عن العمل",
+        "self-employed": "يعمل لحسابه الخاص",
+        "student": "طالب",
+        "retired": "متقاعد",
+        "other": "أخرى"
+      },
+      "housingStatus": {
+        "owned": "ملك",
+        "rented": "مستأجر",
+        "family": "يعيش مع العائلة",
+        "other": "أخرى"
+      }
+    },
     "situationFields": {
       "currentFinancialSituation": "الوضع المالي الحالي",
       "employmentCircumstances": "ظروف العمل", 
@@ -187,8 +226,20 @@
         "monthlyExpenses": "المصروفات الشهرية مطلوبة",
         "employerName": "اسم صاحب العمل مطلوب",
         "jobTitle": "المسمى الوظيفي مطلوب",
-        "workExperience": "الخبرة العملية مطلوبة"
+        "workExperience": "الخبرة العملية مطلوبة",
+        "currentFinancialSituation": "الوضع المالي الحالي مطلوب",
+        "employmentCircumstances": "ظروف التوظيف مطلوبة",
+        "reasonForApplying": "سبب التقديم مطلوب"
       }
+    },
+    "navigation": {
+      "previous": "السابق",
+      "next": "التالي",
+      "continue": "متابعة"
+    },
+    "buttons": {
+      "submitApplication": "تقديم الطلب",
+      "submittingApplication": "جاري تقديم الطلب..."
     },
     "legal": {
       "agreement": "بإنشاء حساب، فإنك توافق على",

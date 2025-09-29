@@ -21,9 +21,9 @@ export interface FinancialAssistanceFormData {
     currentFinancialSituation: string
     employmentCircumstances: string
     reasonForApplying: string
-    previousAssistance: string
-    documents: string[]
-    additionalInfo: string
+    previousAssistance?: string
+    documents?: string[]
+    additionalInfo?: string
   }
   aiGeneratedContent: {
     currentFinancialSituation: string
