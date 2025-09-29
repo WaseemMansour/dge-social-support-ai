@@ -4,6 +4,7 @@ import { Outlet, createRootRoute, useLocation } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { Header } from '../components/Header'
+import { Toaster } from '../components/ui/sonner'
 import '../lib/i18n'
 import { getPageIdentifier } from '../types/navigation'
 
@@ -19,6 +20,7 @@ function RootComponent() {
     <HelmetProvider>
       <Header currentPage={currentPage} />
       <Outlet />
+      <Toaster />
       <TanstackDevtools
         config={{
           position: 'bottom-left',

@@ -298,6 +298,19 @@
     "cancel": "Cancel",
     "saveChanges": "Save Changes"
   },
+  "errors": {
+    "network": "Network error. Check your connection and try again.",
+    "server": "A server error occurred. Please try again.",
+    "unauthorized": "You are not authorized. Please sign in.",
+    "forbidden": "You do not have permission to perform this action.",
+    "notFound": "Requested resource was not found.",
+    "rateLimited": "Too many requests. Please try again later.",
+    "validation": "Validation failed.",
+    "unexpectedResponse": "Received an unexpected response from the server.",
+    "timeout": "The request timed out. Please try again.",
+    "requestFailed": "Request failed.",
+    "unknown": "An unexpected error occurred."
+  },
   "accessibility": {
     "required": "Required field",
     "optional": "Optional field",

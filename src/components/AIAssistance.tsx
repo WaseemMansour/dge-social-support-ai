@@ -1,5 +1,5 @@
 import { Check, Copy, Edit3, Loader2, RefreshCw, Sparkles, Wand2, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '../lib/utils'
 import { useGenerateAIContentMutation, type AIRequest } from '../store/api/financialAssistanceApi'
@@ -40,8 +40,9 @@ export function AIAssistance({
   const [generatedContent, setGeneratedContent] = useState(persistedContent)
   const [isEditing, setIsEditing] = useState(false)
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
-  const [generationStep, setGenerationStep] = useState<'idle' | 'analyzing' | 'writing' | 'polishing' | 'complete'>('idle')
+  const [generationStep, setGenerationStep] = useState<'idle' | 'requesting' | 'complete' | 'error'>('idle')
   const [copied, setCopied] = useState(false)
+  const isRequestInFlight = useRef(false)
   
   // RTK Query mutation for AI content generation
   const [generateAIContent, { isLoading: isGenerating }] = useGenerateAIContentMutation()
@@ -55,15 +56,10 @@ export function AIAssistance({
 
   // AI content generation function with enhanced UX
   const generateContent = async () => {
+    if (isRequestInFlight.current) return
+    isRequestInFlight.current = true
     setIsDialogOpen(true)
-    setGenerationStep('analyzing')
-    
-    // Simulate progressive steps for better UX
-    const steps = ['analyzing', 'writing', 'polishing'] as const
-    for (let i = 0; i < steps.length; i++) {
-      setGenerationStep(steps[i])
-      await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 400))
-    }
+    setGenerationStep('requesting')
     
     try {
         const request: AIRequest = {
@@ -83,20 +79,12 @@ export function AIAssistance({
         setShowSuccessAnimation(true)
         setTimeout(() => setShowSuccessAnimation(false), 2000)
       } else {
-        console.error('AI generation failed:', response.error)
-        const fallbackContent = 'I am experiencing financial difficulties and would appreciate assistance during this challenging time.'
-        setGeneratedContent(fallbackContent)
-        // Persist fallback content to Redux store
-        dispatch(updateAIGeneratedContent({ fieldName, content: fallbackContent }))
-        setGenerationStep('complete')
+        setGenerationStep('error')
       }
-    } catch (error) {
-      console.error('Error generating AI content:', error)
-      const fallbackContent = 'I am experiencing financial difficulties and would appreciate assistance during this challenging time.'
-      setGeneratedContent(fallbackContent)
-      // Persist fallback content to Redux store
-      dispatch(updateAIGeneratedContent({ fieldName, content: fallbackContent }))
-      setGenerationStep('complete')
+    } catch (_error) {
+      setGenerationStep('error')
+    } finally {
+      isRequestInFlight.current = false
     }
   }
 
@@ -149,7 +137,7 @@ export function AIAssistance({
   const handleModalClose = (open: boolean) => {
     if (!open) {
       // Only close the modal if we're not in the middle of generating content
-      if (generationStep === 'idle' || generationStep === 'complete') {
+      if (generationStep === 'idle' || generationStep === 'complete' || generationStep === 'error') {
         setIsDialogOpen(false)
         setIsEditing(false)
         setGenerationStep('idle')
@@ -160,13 +148,10 @@ export function AIAssistance({
   }
 
   const getStepMessage = () => {
-    switch (generationStep) {
-      case 'analyzing': return t('financial-assistance.situationFields.aiAssistance.modal.loading.analyzing')
-      case 'writing': return t('financial-assistance.situationFields.aiAssistance.modal.loading.writing')
-      case 'polishing': return t('financial-assistance.situationFields.aiAssistance.modal.loading.polishing')
-      case 'complete': return t('financial-assistance.situationFields.aiAssistance.modal.generatedContent')
-      default: return t('financial-assistance.situationFields.aiAssistance.generating')
-    }
+    if (generationStep === 'requesting') return t('financial-assistance.situationFields.aiAssistance.generating')
+    if (generationStep === 'complete') return t('financial-assistance.situationFields.aiAssistance.modal.generatedContent')
+    if (generationStep === 'error') return t('errors.network')
+    return t('financial-assistance.situationFields.aiAssistance.generating')
   }
 
   // Check if we have an API key
@@ -186,7 +171,7 @@ export function AIAssistance({
           variant="outline"
           size="sm"
           onClick={generateContent}
-          disabled={isGenerating}
+          disabled={isGenerating || generationStep === 'requesting' || isRequestInFlight.current}
           aria-label={t('accessibility.generateContent')}
           aria-describedby={`ai-help-${fieldName}`}
           className={cn(
@@ -242,9 +227,9 @@ export function AIAssistance({
           {/* Enhanced Header */}
           <DialogHeader className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-[#C2B89C]/5 to-transparent rounded-t-lg" />
-            <DialogTitle className={cn("relative flex items-center space-x-3 py-4", isRTL && "space-x-reverse")}>
-              <div className="relative">
-                <div className="w-10 h-10 bg-gradient-to-br from-[#C2B89C] to-[#C2B89C]/80 rounded-full flex items-center justify-center">
+            <DialogTitle className={cn("relative flex items-center space-x-3 py-4 text-start", isRTL && "space-x-reverse")}>
+              <div className="relative m-0">
+                <div className="w-10 h-10 me-2 bg-gradient-to-br from-[#C2B89C] to-[#C2B89C]/80 rounded-full flex items-center justify-center">
                   <Wand2 className="w-5 h-5 text-white" />
                 </div>
                 {showSuccessAnimation && (
@@ -287,42 +272,28 @@ export function AIAssistance({
                         strokeDasharray="251.2"
                         strokeDashoffset="251.2"
                         className="text-[#C2B89C] transition-all duration-1000 ease-out"
-                        style={{
-                          strokeDashoffset: generationStep === 'analyzing' ? '188.4' : 
-                                           generationStep === 'writing' ? '125.6' : 
-                                           generationStep === 'polishing' ? '62.8' : '0'
-                        }}
+                        style={{ strokeDashoffset: generationStep === 'requesting' ? '125.6' : '0' }}
                         strokeLinecap="round"
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <Wand2 className="w-8 h-8 text-[#C2B89C] animate-pulse" />
+                      {generationStep === 'error' ? (
+                        <X className="w-8 h-8 text-red-500" />
+                      ) : (
+                        <Wand2 className="w-8 h-8 text-[#C2B89C] animate-pulse" />
+                      )}
                     </div>
                   </div>
                   
                   {/* Step Message */}
                   <div className="space-y-2">
                     <h4 className="text-lg font-medium text-gray-900">{getStepMessage()}</h4>
-                    <p className="text-sm text-gray-600">
-                      {generationStep === 'analyzing' && t('financial-assistance.situationFields.aiAssistance.modal.loading.analyzing')}
-                      {generationStep === 'writing' && t('financial-assistance.situationFields.aiAssistance.modal.loading.writing')}
-                      {generationStep === 'polishing' && t('financial-assistance.situationFields.aiAssistance.modal.loading.polishing')}
-                    </p>
+                    {generationStep === 'error' && (
+                      <p className="text-sm text-red-600">{t('errors.network')}</p>
+                    )}
                   </div>
                   
-                  {/* Progress Dots */}
-                  <div className="flex justify-center space-x-2">
-                    {['analyzing', 'writing', 'polishing'].map((step, index) => (
-                      <div
-                        key={step}
-                        className={cn(
-                          "w-2 h-2 rounded-full transition-all duration-300",
-                          generationStep === step ? "bg-[#C2B89C] scale-125" : 
-                          ['analyzing', 'writing', 'polishing'].indexOf(generationStep) > index ? "bg-[#C2B89C]/60" : "bg-gray-300"
-                        )}
-                      />
-                    ))}
-                  </div>
+                  {/* Progress Dots removed to avoid fake staging */}
                 </div>
               </div>
             ) : (

@@ -1,5 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { normalizeApiError } from '../../lib/api-error'
 import { generateAIContent } from '../../services/openaiService'
+import { createBaseQueryWithHandling } from '../baseQueryWithHandling'
 import type { FinancialAssistanceFormData } from '../slices/formSlice'
 
 // Mock API response type
@@ -35,14 +37,7 @@ export interface AIResponse {
 
 export const financialAssistanceApi = createApi({
   reducerPath: 'financialAssistanceApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/api/financial-assistance', // This would be your actual API endpoint
-    prepareHeaders: (headers) => {
-      // Add any auth headers here
-      headers.set('Content-Type', 'application/json')
-      return headers
-    },
-  }),
+  baseQuery: createBaseQueryWithHandling('/api/financial-assistance'),
   tagTypes: ['FinancialAssistance', 'AIContent'],
   endpoints: (builder) => ({
     submitApplication: builder.mutation<SubmissionResponse, FinancialAssistanceFormData>({
@@ -101,10 +96,11 @@ export const financialAssistanceApi = createApi({
           const response = await generateAIContent(request, request.language || 'en')
           return { data: response }
         } catch (error) {
+          const normalized = normalizeApiError({ status: 'FETCH_ERROR', error: error instanceof Error ? error.message : 'Network error' })
           return {
             error: {
               status: 'FETCH_ERROR',
-              error: error instanceof Error ? error.message : 'Unknown error occurred'
+              error: normalized.message
             }
           }
         }

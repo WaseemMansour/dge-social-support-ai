@@ -7,6 +7,7 @@ import { AIAssistance } from '../../../components/AIAssistance'
 import { Button } from '../../../components/ui/button'
 import { Label } from '../../../components/ui/label'
 import { Textarea } from '../../../components/ui/textarea'
+import { normalizeApiError } from '../../../lib/api-error'
 import { cn } from '../../../lib/utils'
 import { createSituationDescriptionSchema, type SituationDescriptionFormData } from '../../../schemas/financial-assistance'
 import { useSubmitApplicationMutation } from '../../../store/api/financialAssistanceApi'
@@ -279,9 +280,10 @@ export function SituationDescriptionStep({ onPrevious, onSubmissionSuccess }: Si
       {submitError && (
         <div className="bg-red-50 border border-red-200 rounded-md p-4">
           <p className="text-red-800 text-sm">
-            {submitError && 'data' in submitError 
-              ? (submitError.data as { message: string }).message 
-              : 'Failed to submit application. Please try again.'}
+            {(() => {
+              const normalized = normalizeApiError(submitError as unknown)
+              return normalized.message
+            })()}
           </p>
         </div>
       )}

@@ -1,31 +1,9 @@
-import OpenAI from 'openai'
+// import OpenAI from 'openai'
+import { normalizeApiError } from '../lib/api-error'
 import type { AIRequest, AIResponse } from '../store/api/financialAssistanceApi'
 
 // Initialize OpenAI client
-let openaiClient: OpenAI | null = null
-
-function getOpenAIClient(): OpenAI | null {
-  if (openaiClient) {
-    return openaiClient
-  }
-
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY
-  
-  if (!apiKey || apiKey === 'your-api-key-here') {
-    return null
-  }
-
-  try {
-    openaiClient = new OpenAI({
-      apiKey,
-      dangerouslyAllowBrowser: true, // Required for browser usage
-    })
-    return openaiClient
-  } catch (error) {
-    console.error('Failed to initialize OpenAI client:', error)
-    return null
-  }
-}
+// Note: SDK client removed for now; direct fetch is used to avoid extra internal requests
 
 // Build AI prompt based on form data and field name
 function buildAIPrompt(request: AIRequest, language: string = 'en'): string {
@@ -95,36 +73,49 @@ function buildAIPrompt(request: AIRequest, language: string = 'en'): string {
 
 // Generate AI content using OpenAI SDK
 export async function generateAIContent(request: AIRequest, language: string = 'en'): Promise<AIResponse> {
-  const client = getOpenAIClient()
-  
-  if (!client) {
-    // Return mock response if no API key
-    return getMockAIResponse(request, language)
+  // Short-circuit when offline to avoid multiple failing network attempts (preflight + request)
+  if (typeof navigator !== 'undefined' && navigator && navigator.onLine === false) {
+    throw new Error('Network offline')
   }
-
   try {
     const prompt = buildAIPrompt(request, language)
     const isArabic = language === 'ar'
     
-    const completion = await client.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        {
-          role: 'system',
-          content: isArabic 
-            ? 'أنت مساعد مفيد يساعد المستخدمين في كتابة أوصاف واضحة ومهنية عن أوضاعهم المالية لطلبات المساعدة. كن متعاطفاً ومفصلاً وواقعياً. قدم معلومات شاملة تساعد المستخدمين على التعبير عن وضعهم بوضوح.'
-            : 'You are a helpful assistant that helps users write clear, professional descriptions of their financial situations for assistance applications. Be empathetic, detailed, and factual. Provide comprehensive information that helps users express their situation clearly.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      max_tokens: 300,
-      temperature: 0.7,
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY
+    if (!apiKey || apiKey === 'your-api-key-here') {
+      return getMockAIResponse(request, language)
+    }
+
+    // Use a single direct fetch to avoid any SDK-internal retries or extra requests
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'system',
+            content: isArabic 
+              ? 'أنت مساعد مفيد يساعد المستخدمين في كتابة أوصاف واضحة ومهنية عن أوضاعهم المالية لطلبات المساعدة. كن متعاطفاً ومفصلاً وواقعياً. قدم معلومات شاملة تساعد المستخدمين على التعبير عن وضعهم بوضوح.'
+              : 'You are a helpful assistant that helps users write clear, professional descriptions of their financial situations for assistance applications. Be empathetic, detailed, and factual. Provide comprehensive information that helps users express their situation clearly.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        max_tokens: 300,
+        temperature: 0.7,
+      })
     })
 
-    const content = completion.choices?.[0]?.message?.content?.trim()
+    if (!response.ok) throw new Error(`OpenAI request failed: ${response.status}`)
+
+    const json = await response.json()
+    const content = json?.choices?.[0]?.message?.content?.trim()
 
     if (!content) {
       throw new Error('No content generated')
@@ -135,10 +126,11 @@ export async function generateAIContent(request: AIRequest, language: string = '
       success: true,
     }
   } catch (error) {
-    console.error('OpenAI API error:', error)
-    
-    // Return mock response on error
-    return getMockAIResponse(request, language)
+    // Propagate a normalized error so RTK Query can handle globally
+    const normalized = normalizeApiError(error)
+    const err = new Error(normalized.message)
+    ;(err as unknown as { status?: unknown }).status = normalized.status
+    throw err
   }
 }
 
@@ -168,5 +160,7 @@ function getMockAIResponse(request: AIRequest, language: string = 'en'): AIRespo
   return {
     content: mockResponses[fieldName as keyof typeof mockResponses] || defaultResponse,
     success: true,
+    // @ts-expect-error augmenting for consumers to detect demo
+    mock: true,
   }
 }
