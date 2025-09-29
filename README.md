@@ -4,19 +4,19 @@ A modern, AI-powered financial assistance application platform built for the Dep
 
 ![Application Overview](https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-form-overview.png)
 
-https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-personal-info.png
+![Personal Info](https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-personal-info.png)
 
 
-https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-family-info.png
+![Family Info](https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-family-info.png)
 
 
-https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-situation.png
+![Situation](https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-situation.png)
 
 
-https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/ai-assistance-demo.png
+![AI Demo](https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/ai-assistance-demo.png)
 
 
-https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-success.png
+![Success](https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-agsssistance-success.png)
 
 
 ## 🌟 Features
