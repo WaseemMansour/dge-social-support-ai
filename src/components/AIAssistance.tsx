@@ -41,14 +41,17 @@ export function AIAssistance({
   const [isEditing, setIsEditing] = useState(false)
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
   const [generationStep, setGenerationStep] = useState<'idle' | 'analyzing' | 'writing' | 'polishing' | 'complete'>('idle')
+  const [copied, setCopied] = useState(false)
   
   // RTK Query mutation for AI content generation
   const [generateAIContent, { isLoading: isGenerating }] = useGenerateAIContentMutation()
 
-  // Update local state when persisted content changes
+  // Update local state when persisted content changes (but not when modal is open)
   useEffect(() => {
-    setGeneratedContent(persistedContent)
-  }, [persistedContent])
+    if (!isDialogOpen) {
+      setGeneratedContent(persistedContent)
+    }
+  }, [persistedContent, isDialogOpen])
 
   // AI content generation function with enhanced UX
   const generateContent = async () => {
@@ -63,11 +66,12 @@ export function AIAssistance({
     }
     
     try {
-      const request: AIRequest = {
-        prompt: t('financial-assistance.situationFields.aiAssistance.prompt'),
-        fieldName,
-        formData
-      }
+        const request: AIRequest = {
+          prompt: t('financial-assistance.situationFields.aiAssistance.prompt'),
+          fieldName,
+          formData,
+          language: i18n.language
+        }
       
       const response = await generateAIContent(request).unwrap()
       
@@ -128,13 +132,15 @@ export function AIAssistance({
   const handleRegenerate = () => {
     setGenerationStep('idle')
     setGeneratedContent('') // Clear previous content when regenerating
+    // Don't close the modal, just regenerate content
     generateContent()
   }
 
   const handleCopyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(generatedContent)
-      // Could add a toast notification here
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
     } catch (error) {
       console.error('Failed to copy to clipboard:', error)
     }
@@ -142,22 +148,24 @@ export function AIAssistance({
 
   const handleModalClose = (open: boolean) => {
     if (!open) {
-      // Only close the modal, preserve the generated content
-      setIsDialogOpen(false)
-      setIsEditing(false)
-      setGenerationStep('idle')
-    } else {
-      setIsDialogOpen(true)
+      // Only close the modal if we're not in the middle of generating content
+      if (generationStep === 'idle' || generationStep === 'complete') {
+        setIsDialogOpen(false)
+        setIsEditing(false)
+        setGenerationStep('idle')
+      }
+      // If we're generating content, don't close the modal
     }
+    // Don't set isDialogOpen to true here - let the Dialog component handle it
   }
 
   const getStepMessage = () => {
     switch (generationStep) {
-      case 'analyzing': return 'Analyzing your information...'
-      case 'writing': return 'Crafting your content...'
-      case 'polishing': return 'Polishing the details...'
-      case 'complete': return 'Content ready!'
-      default: return ''
+      case 'analyzing': return t('financial-assistance.situationFields.aiAssistance.modal.loading.analyzing')
+      case 'writing': return t('financial-assistance.situationFields.aiAssistance.modal.loading.writing')
+      case 'polishing': return t('financial-assistance.situationFields.aiAssistance.modal.loading.polishing')
+      case 'complete': return t('financial-assistance.situationFields.aiAssistance.modal.generatedContent')
+      default: return t('financial-assistance.situationFields.aiAssistance.generating')
     }
   }
 
@@ -168,12 +176,19 @@ export function AIAssistance({
     <>
       {/* Enhanced AI Assistant Button */}
       <div className="relative group">
+        {/* Hidden help text for screen readers */}
+        <div id={`ai-help-${fieldName}`} className="sr-only">
+          {t('accessibility.aiAssistance')}
+        </div>
+        
         <Button
           type="button"
           variant="outline"
           size="sm"
           onClick={generateContent}
           disabled={isGenerating}
+          aria-label={t('accessibility.generateContent')}
+          aria-describedby={`ai-help-${fieldName}`}
           className={cn(
             "relative overflow-hidden flex items-center space-x-2",
             "bg-gradient-to-r from-[#C2B89C]/5 to-[#C2B89C]/10",
@@ -237,8 +252,8 @@ export function AIAssistance({
                 )}
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-gray-900">AI Writing Assistant</h3>
-                <p className="text-sm text-gray-600">Powered by advanced AI technology</p>
+                <h3 className="text-xl font-semibold text-gray-900">{t('financial-assistance.situationFields.aiAssistance.modal.title')}</h3>
+                <p className="text-sm text-gray-600">{t('financial-assistance.situationFields.aiAssistance.modal.subtitle')}</p>
               </div>
             </DialogTitle>
           </DialogHeader>
@@ -289,9 +304,9 @@ export function AIAssistance({
                   <div className="space-y-2">
                     <h4 className="text-lg font-medium text-gray-900">{getStepMessage()}</h4>
                     <p className="text-sm text-gray-600">
-                      {generationStep === 'analyzing' && 'Reviewing your personal and financial information...'}
-                      {generationStep === 'writing' && 'Creating personalized content based on your situation...'}
-                      {generationStep === 'polishing' && 'Refining the language and ensuring clarity...'}
+                      {generationStep === 'analyzing' && t('financial-assistance.situationFields.aiAssistance.modal.loading.analyzing')}
+                      {generationStep === 'writing' && t('financial-assistance.situationFields.aiAssistance.modal.loading.writing')}
+                      {generationStep === 'polishing' && t('financial-assistance.situationFields.aiAssistance.modal.loading.polishing')}
                     </p>
                   </div>
                   
@@ -318,30 +333,49 @@ export function AIAssistance({
                   <div className="space-y-4">
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <Edit3 className="w-4 h-4" />
-                      <span>Edit the generated content below</span>
+                      <span>{t('financial-assistance.situationFields.aiAssistance.modal.editContent')}</span>
                     </div>
                     <Textarea
                       value={generatedContent}
                       onChange={(e) => setGeneratedContent(e.target.value)}
-                      rows={8}
-                      className="w-full resize-none border-2 border-[#C2B89C]/20 focus:border-[#C2B89C] transition-colors"
-                      placeholder="Edit your content here..."
+                      rows={12}
+                      className="w-full resize-none border-2 border-[#C2B89C]/20 focus:border-[#C2B89C] transition-colors max-h-96 overflow-y-auto"
+                      placeholder={t('financial-assistance.situationFields.aiAssistance.modal.editPlaceholder')}
                     />
                     <div className="flex justify-end space-x-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleDisregard}
+                        className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300"
+                        aria-label={t('accessibility.disregardContent')}
+                      >
+                        <X className="w-4 h-4" aria-hidden="true" />
+                        <span>{t('financial-assistance.situationFields.aiAssistance.modal.disregard')}</span>
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setIsEditing(false)}
                         className="px-6"
                       >
-                        Cancel
+                        {t('common.cancel')}
                       </Button>
                       <Button
                         size="sm"
                         onClick={handleEditSave}
                         className="bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white px-6"
                       >
-                        Save Changes
+                        {t('common.saveChanges')}
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => { onAccept(generatedContent); setIsDialogOpen(false); setIsEditing(false); setGenerationStep('idle') }}
+                        className="bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all duration-200"
+                        aria-label={t('accessibility.acceptContent')}
+                      >
+                        <Check className="w-4 h-4" aria-hidden="true" />
+                        <span>{t('financial-assistance.situationFields.aiAssistance.modal.accept')}</span>
                       </Button>
                     </div>
                   </div>
@@ -354,18 +388,19 @@ export function AIAssistance({
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center space-x-2">
                             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                            <span className="text-sm font-medium text-gray-700">Generated Content</span>
+                            <span className="text-sm font-medium text-gray-700">{t('financial-assistance.situationFields.aiAssistance.modal.generatedContent')}</span>
                           </div>
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={handleCopyToClipboard}
                             className="text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                            title={copied ? t('financial-assistance.situationFields.aiAssistance.modal.copied') : t('financial-assistance.situationFields.aiAssistance.modal.copy')}
                           >
-                            <Copy className="w-4 h-4" />
+                            {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
                           </Button>
                         </div>
-                        <div className="prose prose-sm max-w-none">
+                        <div className="prose prose-sm max-w-none max-h-96 overflow-y-auto pr-2">
                           <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
                             {generatedContent}
                           </p>
@@ -384,7 +419,7 @@ export function AIAssistance({
                           className="flex items-center space-x-2 hover:bg-[#C2B89C]/10 hover:border-[#C2B89C]/50"
                         >
                           <Edit3 className="w-4 h-4" />
-                          <span>Edit</span>
+                          <span>{t('financial-assistance.situationFields.aiAssistance.modal.edit')}</span>
                         </Button>
                         <Button
                           variant="outline"
@@ -393,7 +428,7 @@ export function AIAssistance({
                           className="flex items-center space-x-2 hover:bg-[#C2B89C]/10 hover:border-[#C2B89C]/50"
                         >
                           <RefreshCw className="w-4 h-4" />
-                          <span>Regenerate</span>
+                          <span>{t('financial-assistance.situationFields.aiAssistance.modal.regenerate')}</span>
                         </Button>
                       </div>
                       
@@ -404,17 +439,19 @@ export function AIAssistance({
                           size="sm"
                           onClick={handleDisregard}
                           className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300"
+                          aria-label={t('accessibility.disregardContent')}
                         >
-                          <X className="w-4 h-4" />
-                          <span>Disregard</span>
+                          <X className="w-4 h-4" aria-hidden="true" />
+                          <span>{t('financial-assistance.situationFields.aiAssistance.modal.disregard')}</span>
                         </Button>
                         <Button
                           size="sm"
                           onClick={handleAccept}
                           className="bg-[#C2B89C] hover:bg-[#C2B89C]/90 text-white flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all duration-200"
+                          aria-label={t('accessibility.acceptContent')}
                         >
-                          <Check className="w-4 h-4" />
-                          <span>Accept & Use</span>
+                          <Check className="w-4 h-4" aria-hidden="true" />
+                          <span>{t('financial-assistance.situationFields.aiAssistance.modal.accept')}</span>
                         </Button>
                       </div>
                     </div>

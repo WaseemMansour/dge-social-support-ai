@@ -141,7 +141,25 @@
         "accept": "Accept",
         "edit": "Edit",
         "disregard": "Disregard",
-        "prompt": "Generate content based on your personal and financial information"
+        "prompt": "Generate content based on your personal and financial information",
+        "modal": {
+          "title": "AI Writing Assistant",
+          "subtitle": "Powered by advanced AI technology",
+          "generatedContent": "Generated Content",
+          "edit": "Edit",
+          "editContent": "Edit the generated content below",
+          "editPlaceholder": "Edit your content here...",
+          "regenerate": "Regenerate",
+          "accept": "Accept & Use",
+          "disregard": "Disregard",
+          "copy": "Copy",
+          "copied": "Copied!",
+          "loading": {
+            "analyzing": "Analyzing your information...",
+            "writing": "Crafting your content...",
+            "polishing": "Polishing the details..."
+          }
+        }
       }
     },
     "success": {
@@ -276,6 +294,36 @@
     "loading": "Loading...",
     "error": "An error occurred",
     "success": "Success",
-    "currentStep": "Current Step"
+    "currentStep": "Current Step",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes"
+  },
+  "accessibility": {
+    "required": "Required field",
+    "optional": "Optional field",
+    "error": "Error",
+    "step": "Step",
+    "of": "of",
+    "completed": "Completed",
+    "current": "Current",
+    "upcoming": "Upcoming",
+    "formProgress": "Form progress",
+    "stepProgress": "Step {current} of {total}",
+    "validationError": "Validation error",
+    "fieldError": "This field has an error",
+    "helpText": "Help text",
+    "close": "Close",
+    "open": "Open",
+    "menu": "Menu",
+    "navigation": "Navigation",
+    "mainContent": "Main content",
+    "skipToContent": "Skip to main content",
+    "aiAssistance": "AI writing assistance",
+    "generateContent": "Generate content with AI",
+    "acceptContent": "Accept generated content",
+    "editContent": "Edit generated content",
+    "disregardContent": "Disregard generated content",
+    "copyToClipboard": "Copy to clipboard",
+    "copiedToClipboard": "Copied to clipboard"
   }
 }

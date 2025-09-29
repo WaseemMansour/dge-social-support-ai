@@ -24,6 +24,7 @@ export interface AIRequest {
   prompt: string
   fieldName: string
   formData: Record<string, unknown>
+  language?: string
 }
 
 export interface AIResponse {
@@ -97,7 +98,7 @@ export const financialAssistanceApi = createApi({
     generateAIContent: builder.mutation<AIResponse, AIRequest>({
       async queryFn(request: AIRequest, _queryApi, _extraOptions) {
         try {
-          const response = await generateAIContent(request)
+          const response = await generateAIContent(request, request.language || 'en')
           return { data: response }
         } catch (error) {
           return {

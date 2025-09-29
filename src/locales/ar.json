@@ -141,7 +141,25 @@
         "accept": "قبول",
         "edit": "تعديل",
         "disregard": "تجاهل",
-        "prompt": "توليد المحتوى بناءً على معلوماتك الشخصية والمالية"
+        "prompt": "توليد المحتوى بناءً على معلوماتك الشخصية والمالية",
+        "modal": {
+          "title": "مساعد الكتابة بالذكاء الاصطناعي",
+          "subtitle": "مدعوم بتقنية الذكاء الاصطناعي المتقدمة",
+          "generatedContent": "المحتوى المُولد",
+          "edit": "تعديل",
+          "editContent": "قم بتعديل المحتوى المُولد أدناه",
+          "editPlaceholder": "قم بتعديل المحتوى هنا...",
+          "regenerate": "إعادة توليد",
+          "accept": "قبول واستخدام",
+          "disregard": "تجاهل",
+          "copy": "نسخ",
+          "copied": "تم النسخ!",
+          "loading": {
+            "analyzing": "جاري تحليل معلوماتك...",
+            "writing": "جاري كتابة المحتوى...",
+            "polishing": "جاري تحسين التفاصيل..."
+          }
+        }
       }
     },
     "success": {
@@ -276,6 +294,36 @@
     "loading": "جاري التحميل...",
     "error": "حدث خطأ",
     "success": "نجح",
-    "currentStep": "الخطوة الحالية"
+    "currentStep": "الخطوة الحالية",
+    "cancel": "إلغاء",
+    "saveChanges": "حفظ التغييرات"
+  },
+  "accessibility": {
+    "required": "حقل مطلوب",
+    "optional": "حقل اختياري",
+    "error": "خطأ",
+    "step": "خطوة",
+    "of": "من",
+    "completed": "مكتمل",
+    "current": "الحالي",
+    "upcoming": "قادم",
+    "formProgress": "تقدم النموذج",
+    "stepProgress": "الخطوة {current} من {total}",
+    "validationError": "خطأ في التحقق",
+    "fieldError": "هذا الحقل يحتوي على خطأ",
+    "helpText": "نص المساعدة",
+    "close": "إغلاق",
+    "open": "فتح",
+    "menu": "القائمة",
+    "navigation": "التنقل",
+    "mainContent": "المحتوى الرئيسي",
+    "skipToContent": "انتقل إلى المحتوى الرئيسي",
+    "aiAssistance": "مساعدة الكتابة بالذكاء الاصطناعي",
+    "generateContent": "إنشاء المحتوى بالذكاء الاصطناعي",
+    "acceptContent": "قبول المحتوى المُنشأ",
+    "editContent": "تحرير المحتوى المُنشأ",
+    "disregardContent": "تجاهل المحتوى المُنشأ",
+    "copyToClipboard": "نسخ إلى الحافظة",
+    "copiedToClipboard": "تم النسخ إلى الحافظة"
   }
 }
