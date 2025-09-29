@@ -4,6 +4,21 @@ A modern, AI-powered financial assistance application platform built for the Dep
 
 ![Application Overview](https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-form-overview.png)
 
+https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-personal-info.png
+
+
+https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-family-info.png
+
+
+https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-situation.png
+
+
+https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/ai-assistance-demo.png
+
+
+https://raw.githubusercontent.com/WaseemMansour/dge-social-support-ai/main/public/screenshots/financial-assistance-success.png
+
+
 ## 🌟 Features
 
 - 🤖 **AI-Powered Assistance**: Intelligent help for form filling using OpenAI's GPT models
@@ -87,34 +102,34 @@ We've carefully chosen our technology stack to provide the best developer experi
 ### Installation
 
 1. Clone the repository:
-   \`\`\`bash
-   git clone [repository-url]
-   cd dge-social-support-ai
-   \`\`\`
+```bash
+git clone [repository-url]
+cd dge-social-support-ai
+```
 
 2. Install dependencies:
-   \`\`\`bash
-   npm install
-   \`\`\`
+```bash
+npm install
+```
 
 3. Set up environment variables:
-   - Create a \`.env.local\` file
+   - Create a `.env.local` file
    - Add required variables:
-     \`\`\`
-     VITE_OPENAI_API_KEY=your-openai-api-key
-     \`\`\`
+```
+VITE_OPENAI_API_KEY=your-openai-api-key
+```
 
 4. Start development server:
-   \`\`\`bash
-   npm run dev
-   \`\`\`
+```bash
+npm run dev
+```
 
 ## 🧪 Testing
 
 - Run E2E tests:
-  \`\`\`bash
-  npm run test:e2e
-  \`\`\`
+```bash
+npm run test:e2e
+```
 
 ## 🛠️ Development Tools
 
@@ -122,27 +137,27 @@ We've carefully chosen our technology stack to provide the best developer experi
 
 Use Shadcn to add new components:
 
-\`\`\`bash
+```bash
 pnpx shadcn@latest add [component-name]
-\`\`\`
+```
 
 ### Code Quality
 
-- Linting: \`npm run lint\`
-- Formatting: \`npm run format\`
-- Type checking: \`npm run check\`
+- Linting: `npm run lint`
+- Formatting: `npm run format`
+- Type checking: `npm run check`
 
 ## 🌍 Internationalization
 
-The application supports both English and Arabic languages. Language files are located in \`src/locales/\`.
+The application supports both English and Arabic languages. Language files are located in `src/locales/`.
 
 ## 📦 Building for Production
 
 Build the application:
 
-\`\`\`bash
+```bash
 npm run build
-\`\`\`
+```
 
 ## 📄 License
 
