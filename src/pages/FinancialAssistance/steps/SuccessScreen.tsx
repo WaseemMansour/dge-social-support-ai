@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router'
 import { CheckCircle, Copy, Home, RotateCcw } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../../components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card'
@@ -25,6 +25,14 @@ export function SuccessScreen({ onStartNew }: SuccessScreenProps) {
   
   const [applicationNumber] = useState(generateApplicationNumber())
   const [copied, setCopied] = useState(false)
+
+  // Clear form state and localStorage when component unmounts
+  useEffect(() => {
+    return () => {
+      // This cleanup function runs when the component unmounts
+      dispatch(clearForm())
+    }
+  }, [dispatch])
 
   const handleStartNew = () => {
     dispatch(clearForm())
