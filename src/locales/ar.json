@@ -178,7 +178,16 @@
         "address": "العنوان مطلوب",
         "city": "المدينة مطلوبة",
         "state": "الولاية/الإمارة مطلوبة",
-        "country": "البلد مطلوب"
+        "country": "البلد مطلوب",
+        "maritalStatus": "الحالة الاجتماعية مطلوبة",
+        "dependents": "عدد المعالين مطلوب",
+        "employmentStatus": "حالة التوظيف مطلوبة",
+        "monthlyIncome": "الدخل الشهري مطلوب",
+        "housingStatus": "حالة السكن مطلوبة",
+        "monthlyExpenses": "المصروفات الشهرية مطلوبة",
+        "employerName": "اسم صاحب العمل مطلوب",
+        "jobTitle": "المسمى الوظيفي مطلوب",
+        "workExperience": "الخبرة العملية مطلوبة"
       }
     },
     "legal": {

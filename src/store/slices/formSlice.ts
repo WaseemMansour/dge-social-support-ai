@@ -5,15 +5,17 @@ import type { PersonalInfoFormData } from '../../schemas/financial-assistance'
 export interface FinancialAssistanceFormData {
   personalInfo: PersonalInfoFormData
   familyFinancial: {
-    monthlyIncome: string
-    monthlyExpenses: string
+    maritalStatus: string
     dependents: string
     employmentStatus: string
+    monthlyIncome: string
+    housingStatus: string
+    monthlyExpenses: string
     employerName: string
     jobTitle: string
     workExperience: string
-    additionalIncome: string
-    additionalIncomeSource: string
+    additionalIncome?: string
+    additionalIncomeSource?: string
   }
   situationDescription: {
     currentFinancialSituation: string

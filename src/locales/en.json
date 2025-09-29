@@ -178,7 +178,16 @@
         "address": "Address is required",
         "city": "City is required",
         "state": "State/Emirate is required",
-        "country": "Country is required"
+        "country": "Country is required",
+        "maritalStatus": "Marital status is required",
+        "dependents": "Number of dependents is required",
+        "employmentStatus": "Employment status is required",
+        "monthlyIncome": "Monthly income is required",
+        "housingStatus": "Housing status is required",
+        "monthlyExpenses": "Monthly expenses is required",
+        "employerName": "Employer name is required",
+        "jobTitle": "Job title is required",
+        "workExperience": "Work experience is required"
       }
     },
     "legal": {

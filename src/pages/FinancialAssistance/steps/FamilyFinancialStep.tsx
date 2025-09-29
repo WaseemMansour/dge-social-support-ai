@@ -1,5 +1,6 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../../components/ui/button'
@@ -8,8 +9,9 @@ import { Label } from '../../../components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select'
 import { Textarea } from '../../../components/ui/textarea'
 import { cn } from '../../../lib/utils'
+import { createFamilyFinancialSchema, type FamilyFinancialFormData } from '../../../schemas/financial-assistance'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
-import { updateFamilyFinancial, type FinancialAssistanceFormData } from '../../../store/slices/formSlice'
+import { updateFamilyFinancial } from '../../../store/slices/formSlice'
 
 interface FamilyFinancialStepProps {
   onNext: () => void
@@ -55,6 +57,9 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
   const dispatch = useAppDispatch()
   const { formData } = useAppSelector((state) => state.form)
 
+  // Create schema with current language
+  const schema = useMemo(() => createFamilyFinancialSchema(t), [t])
+
   // React Hook Form setup
   const {
     handleSubmit,
@@ -62,12 +67,15 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
     control,
     reset,
     formState: { errors, isSubmitting, touchedFields, isSubmitted }
-  } = useForm<FinancialAssistanceFormData['familyFinancial']>({
+  } = useForm<FamilyFinancialFormData>({
+    resolver: zodResolver(schema),
     defaultValues: formData.familyFinancial || {
-      monthlyIncome: '',
-      monthlyExpenses: '',
+      maritalStatus: '',
       dependents: '',
       employmentStatus: '',
+      monthlyIncome: '',
+      housingStatus: '',
+      monthlyExpenses: '',
       employerName: '',
       jobTitle: '',
       workExperience: '',
@@ -80,10 +88,12 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
   // Reset form when Redux state changes (e.g., after clearing form)
   useEffect(() => {
     const newValues = formData.familyFinancial || {
-      monthlyIncome: '',
-      monthlyExpenses: '',
+      maritalStatus: '',
       dependents: '',
       employmentStatus: '',
+      monthlyIncome: '',
+      housingStatus: '',
+      monthlyExpenses: '',
       employerName: '',
       jobTitle: '',
       workExperience: '',
@@ -93,7 +103,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
     reset(newValues)
   }, [formData.familyFinancial, reset])
 
-  const onSubmit = (data: FinancialAssistanceFormData['familyFinancial']) => {
+  const onSubmit = (data: FamilyFinancialFormData) => {
     dispatch(updateFamilyFinancial(data))
     onNext()
   }
@@ -111,6 +121,62 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Marital Status */}
+        <FormField 
+          label="Marital Status" 
+          required 
+          error={errors.maritalStatus?.message}
+          touched={!!touchedFields.maritalStatus}
+          isSubmitted={isSubmitted}
+          className="w-full"
+        >
+          <Controller
+            name="maritalStatus"
+            control={control}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select marital status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="single">Single</SelectItem>
+                  <SelectItem value="married">Married</SelectItem>
+                  <SelectItem value="divorced">Divorced</SelectItem>
+                  <SelectItem value="widowed">Widowed</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </FormField>
+
+        {/* Housing Status */}
+        <FormField 
+          label="Housing Status" 
+          required 
+          error={errors.housingStatus?.message}
+          touched={!!touchedFields.housingStatus}
+          isSubmitted={isSubmitted}
+          className="w-full"
+        >
+          <Controller
+            name="housingStatus"
+            control={control}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select housing status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="owned">Owned</SelectItem>
+                  <SelectItem value="rented">Rented</SelectItem>
+                  <SelectItem value="family">Living with Family</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </FormField>
+
         {/* Monthly Income */}
         <FormField 
           label="Monthly Income (AED)" 
@@ -121,7 +187,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
           className="w-full"
         >
           <Input 
-            {...register('monthlyIncome', { required: 'Monthly income is required' })}
+            {...register('monthlyIncome')}
             type="number"
             placeholder="Enter your monthly income"
             className="w-full"
@@ -138,7 +204,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
           className="w-full"
         >
           <Input 
-            {...register('monthlyExpenses', { required: 'Monthly expenses is required' })}
+            {...register('monthlyExpenses')}
             type="number"
             placeholder="Enter your monthly expenses"
             className="w-full"
@@ -155,7 +221,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
           className="w-full"
         >
           <Input 
-            {...register('dependents', { required: 'Number of dependents is required' })}
+            {...register('dependents')}
             type="number"
             placeholder="Enter number of dependents"
             className="w-full"
@@ -174,7 +240,6 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
           <Controller
             name="employmentStatus"
             control={control}
-            rules={{ required: 'Employment status is required' }}
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
                 <SelectTrigger className="w-full" onBlur={field.onBlur}>
@@ -196,6 +261,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
         {/* Employer Name */}
         <FormField 
           label="Employer Name" 
+          required
           error={errors.employerName?.message}
           touched={!!touchedFields.employerName}
           isSubmitted={isSubmitted}
@@ -211,6 +277,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
         {/* Job Title */}
         <FormField 
           label="Job Title" 
+          required
           error={errors.jobTitle?.message}
           touched={!!touchedFields.jobTitle}
           isSubmitted={isSubmitted}
@@ -226,6 +293,7 @@ export function FamilyFinancialStep({ onNext, onPrevious }: FamilyFinancialStepP
         {/* Work Experience */}
         <FormField 
           label="Work Experience (Years)" 
+          required
           error={errors.workExperience?.message}
           touched={!!touchedFields.workExperience}
           isSubmitted={isSubmitted}

@@ -29,3 +29,33 @@ export type PersonalInfoFormData = {
   state: string
   country: string
 }
+
+// Create a function that returns the family financial schema with i18n messages
+export const createFamilyFinancialSchema = (t: (key: string) => string) => z.object({
+  maritalStatus: z.string().min(1, t('financial-assistance.form.validation.maritalStatus')),
+  dependents: z.string().min(1, t('financial-assistance.form.validation.dependents')),
+  employmentStatus: z.string().min(1, t('financial-assistance.form.validation.employmentStatus')),
+  monthlyIncome: z.string().min(1, t('financial-assistance.form.validation.monthlyIncome')),
+  housingStatus: z.string().min(1, t('financial-assistance.form.validation.housingStatus')),
+  monthlyExpenses: z.string().min(1, t('financial-assistance.form.validation.monthlyExpenses')),
+  employerName: z.string().min(1, t('financial-assistance.form.validation.employerName')),
+  jobTitle: z.string().min(1, t('financial-assistance.form.validation.jobTitle')),
+  workExperience: z.string().min(1, t('financial-assistance.form.validation.workExperience')),
+  additionalIncome: z.string().optional(),
+  additionalIncomeSource: z.string().optional(),
+})
+
+// Type for the family financial form data
+export type FamilyFinancialFormData = {
+  maritalStatus: string
+  dependents: string
+  employmentStatus: string
+  monthlyIncome: string
+  housingStatus: string
+  monthlyExpenses: string
+  employerName: string
+  jobTitle: string
+  workExperience: string
+  additionalIncome?: string
+  additionalIncomeSource?: string
+}
