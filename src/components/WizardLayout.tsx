@@ -27,24 +27,20 @@ export function WizardLayout({
       <div className="container mx-auto px-4 py-4 md:py-8">
         <div className="flex justify-center">
           <div className="w-full max-w-6xl">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6">
               {/* Form Content */}
-              <div className="lg:col-span-2">
-                <main 
-                  id="main-content"
-                  className="bg-white rounded-xl md:rounded-2xl shadow-sm border border-[#C2B89C]/20 p-4 md:p-8"
-                  role="main"
-                  aria-label="Application form"
-                >
-                  {children}
-                </main>
-              </div>
-              
-              {/* Support Resources Sidebar */}
-              <div className="lg:col-span-1">
-                <div className="sticky top-4">
-                  <SupportResources />
-                </div>
+              <main 
+                id="main-content"
+                className="bg-white rounded-xl md:rounded-2xl shadow-sm border border-[#C2B89C]/20 p-4 md:p-8"
+                role="main"
+                aria-label="Application form"
+              >
+                {children}
+              </main>
+
+              {/* Support Resources Under Form */}
+              <div>
+                <SupportResources />
               </div>
             </div>
           </div>
