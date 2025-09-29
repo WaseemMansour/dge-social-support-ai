@@ -1,7 +1,6 @@
-import { Clock, HelpCircle, Mail, MessageCircle, Phone } from 'lucide-react'
+import { Mail, Phone } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '../lib/utils'
-import { Button } from './ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
 
 interface SupportResourcesProps {
@@ -48,31 +47,6 @@ export function SupportResources({ className }: SupportResourcesProps) {
               </p>
             </div>
           </div>
-        </div>
-
-        {/* Support Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <Button 
-            variant="outline" 
-            className="w-full justify-start border-[#C2B89C]/30 hover:bg-[#C2B89C]/10"
-          >
-            <HelpCircle className="w-4 h-4 mr-2" />
-            {t('financial-assistance.support.resources.faq')}
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className="w-full justify-start border-[#C2B89C]/30 hover:bg-[#C2B89C]/10"
-          >
-            <MessageCircle className="w-4 h-4 mr-2" />
-            {t('financial-assistance.support.resources.guidance')}
-          </Button>
-        </div>
-
-        {/* Availability */}
-        <div className={cn("flex items-center justify-center space-x-2 text-sm text-gray-600", isRTL && "space-x-reverse")}>
-          <Clock className="w-4 h-4" />
-          <span>{t('financial-assistance.support.contact.hours')}</span>
         </div>
       </CardContent>
     </Card>

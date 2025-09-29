@@ -24,7 +24,10 @@ export function Header({ currentPage = PageIdentifier.HOME }: HeaderProps) {
   }
   
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-warm-cream bg-[#C2B89C] backdrop-blur-sm bg-opacity-95">
+    <header 
+      className="sticky top-0 z-50 w-full border-b border-warm-cream bg-[#C2B89C] backdrop-blur-sm bg-opacity-95"
+      role="banner"
+    >
       <div className="container mx-auto px-4 py-4">
         <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : 'justify-between'}`}>
           {/* Logo */}
@@ -41,7 +44,12 @@ export function Header({ currentPage = PageIdentifier.HOME }: HeaderProps) {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
             {/* Navigation Menu */}
-            <nav className="flex items-center space-x-8" dir={isRTL ? 'rtl' : 'ltr'}>
+            <nav 
+              className="flex items-center space-x-8" 
+              dir={isRTL ? 'rtl' : 'ltr'}
+              role="navigation"
+              aria-label={t('accessibility.navigation')}
+            >
               <Link 
                 to={ROUTES.HOME}
                 className={`px-4 py-2 text-sm font-medium transition-all duration-200 flex items-center space-x-2 rounded-md ${
@@ -81,11 +89,14 @@ export function Header({ currentPage = PageIdentifier.HOME }: HeaderProps) {
               size="sm"
               onClick={toggleMobileMenu}
               className="text-gray-800 hover:bg-[#C2B89C]/20"
+              aria-label={t('accessibility.menu')}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
             >
               {isMobileMenuOpen ? (
-                <X className="w-6 h-6" />
+                <X className="w-6 h-6" aria-hidden="true" />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu className="w-6 h-6" aria-hidden="true" />
               )}
             </Button>
           </div>
@@ -93,7 +104,12 @@ export function Header({ currentPage = PageIdentifier.HOME }: HeaderProps) {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-[#C2B89C]/30">
+          <div 
+            id="mobile-menu"
+            className="md:hidden mt-4 pb-4 border-t border-[#C2B89C]/30"
+            role="navigation"
+            aria-label={t('accessibility.navigation')}
+          >
             <nav className="flex flex-col space-y-2 pt-4" dir={isRTL ? 'rtl' : 'ltr'}>
               <Link 
                 to={ROUTES.HOME}

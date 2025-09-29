@@ -1,12 +1,12 @@
+import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../../components/ui/button'
 import { DatePicker } from '../../../components/ui/date-picker'
 import { Input } from '../../../components/ui/input'
-import { Label } from '../../../components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select'
 import { Textarea } from '../../../components/ui/textarea'
 import { cn } from '../../../lib/utils'
@@ -32,7 +32,7 @@ interface FormFieldProps {
 }
 
 function FormField({ label, required = false, error, touched = false, isSubmitted = false, children, className }: FormFieldProps) {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const isRTL = i18n.language === 'ar'
   
   // Show error if field is touched OR form has been submitted
@@ -42,11 +42,32 @@ function FormField({ label, required = false, error, touched = false, isSubmitte
     <div className={cn("space-y-1", className)}>
       <Label className={cn("text-sm font-medium text-gray-700", isRTL && "text-right")}>
         {label}
-        {required && <span className={cn("text-red-500", isRTL ? "mr-1" : "ml-1")}>*</span>}
+        {required && (
+          <span 
+            className={cn("text-red-500", isRTL ? "mr-1" : "ml-1")}
+            aria-label={t('accessibility.required')}
+          >
+            *
+          </span>
+        )}
+        {!required && (
+          <span 
+            className={cn("text-gray-400 text-xs", isRTL ? "mr-1" : "ml-1")}
+            aria-label={t('accessibility.optional')}
+          >
+            ({t('accessibility.optional')})
+          </span>
+        )}
       </Label>
       {children}
       {shouldShowError && (
-        <p className={cn("text-sm text-red-600 mt-0.5", isRTL && "text-right")}>{error}</p>
+        <p 
+          className={cn("text-sm text-red-600 mt-0.5", isRTL && "text-right")}
+          role="alert"
+          aria-live="polite"
+        >
+          {error}
+        </p>
       )}
     </div>
   )

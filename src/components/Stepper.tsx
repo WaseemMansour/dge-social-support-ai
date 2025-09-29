@@ -21,11 +21,16 @@ export function Stepper({ currentStep, steps, className }: StepperProps) {
     return num.toString()
   }
   return (
-    <div className={cn("w-full py-4 md:py-6", className)} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div 
+      className={cn("w-full py-4 md:py-6", className)} 
+      dir={isRTL ? 'rtl' : 'ltr'}
+      role="navigation"
+      aria-label={t('accessibility.formProgress')}
+    >
       <div className="container mx-auto px-4">
         {/* Desktop Stepper */}
         <div className="hidden md:flex items-center justify-center">
-          <div className={cn("flex items-center", isRTL ? "space-x-reverse space-x-4" : "space-x-4")}>
+          <ol className={cn("flex items-center", isRTL ? "space-x-reverse space-x-4" : "space-x-4")} role="list">
             {steps.map((step, index) => {
               const stepNumber = index + 1
               const isCompleted = stepNumber < currentStep
@@ -33,7 +38,7 @@ export function Stepper({ currentStep, steps, className }: StepperProps) {
               const isUpcoming = stepNumber > currentStep
 
               return (
-                <div key={step} className="flex items-center">
+                <li key={step} className="flex items-center" role="listitem">
                   {/* Step Circle */}
                   <div className="flex flex-col items-center">
                     <div
@@ -44,11 +49,13 @@ export function Stepper({ currentStep, steps, className }: StepperProps) {
                           "bg-white text-gray-600 border border-gray-200": isUpcoming,
                         }
                       )}
+                      aria-label={`${t('accessibility.step')} ${stepNumber}: ${step}`}
+                      role="img"
                     >
                       {isCompleted ? (
-                        <Check className="w-5 h-5" />
+                        <Check className="w-5 h-5" aria-hidden="true" />
                       ) : (
-                        <span className="text-sm font-medium">{getStepNumber(stepNumber)}</span>
+                        <span className="text-sm font-medium" aria-hidden="true">{getStepNumber(stepNumber)}</span>
                       )}
                     </div>
                     <span
@@ -59,6 +66,7 @@ export function Stepper({ currentStep, steps, className }: StepperProps) {
                           "text-gray-400": isUpcoming,
                         }
                       )}
+                      aria-label={`${step} - ${isCompleted ? t('accessibility.completed') : isCurrent ? t('accessibility.current') : t('accessibility.upcoming')}`}
                     >
                       {step}
                     </span>
@@ -76,15 +84,15 @@ export function Stepper({ currentStep, steps, className }: StepperProps) {
                       )}
                     />
                   )}
-                </div>
+                </li>
               )
             })}
-          </div>
+          </ol>
         </div>
 
         {/* Mobile Stepper */}
         <div className="md:hidden">
-          <div className="space-y-4">
+          <ol className="space-y-4" role="list">
             {steps.map((step, index) => {
               const stepNumber = index + 1
               const isCompleted = stepNumber < currentStep
@@ -92,7 +100,7 @@ export function Stepper({ currentStep, steps, className }: StepperProps) {
               const isUpcoming = stepNumber > currentStep
 
               return (
-                <div key={step} className="relative">
+                <li key={step} className="relative" role="listitem">
                   <div className={cn("flex items-center", isRTL ? "space-x-reverse space-x-4" : "space-x-4")}>
                     {/* Step Circle */}
                     <div
@@ -103,11 +111,13 @@ export function Stepper({ currentStep, steps, className }: StepperProps) {
                           "bg-white text-gray-600 border border-gray-200": isUpcoming,
                         }
                       )}
+                      aria-label={`${t('accessibility.step')} ${stepNumber}: ${step}`}
+                      role="img"
                     >
                       {isCompleted ? (
-                        <Check className="w-5 h-5" />
+                        <Check className="w-5 h-5" aria-hidden="true" />
                       ) : (
-                        <span className="text-sm font-medium">{getStepNumber(stepNumber)}</span>
+                        <span className="text-sm font-medium" aria-hidden="true">{getStepNumber(stepNumber)}</span>
                       )}
                     </div>
                     
@@ -122,6 +132,7 @@ export function Stepper({ currentStep, steps, className }: StepperProps) {
                             "text-gray-400": isUpcoming,
                           }
                         )}
+                        aria-label={`${step} - ${isCompleted ? t('accessibility.completed') : isCurrent ? t('accessibility.current') : t('accessibility.upcoming')}`}
                       >
                         {step}
                       </div>
@@ -142,10 +153,10 @@ export function Stepper({ currentStep, steps, className }: StepperProps) {
                       )}
                     />
                   )}
-                </div>
+                </li>
               )
             })}
-          </div>
+          </ol>
         </div>
       </div>
     </div>

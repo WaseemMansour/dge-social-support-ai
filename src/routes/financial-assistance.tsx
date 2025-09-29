@@ -1,9 +1,12 @@
 import { Helmet } from '@dr.pogodin/react-helmet'
 import { createFileRoute, redirect } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { FinancialAssistanceWizard } from '@/pages/FinancialAssistance'
+import { useAppDispatch, useAppSelector } from '../store/hooks'
 import type { StepName } from '../store/slices/formSlice'
+import { clearForm } from '../store/slices/formSlice'
 
 export const Route = createFileRoute('/financial-assistance')({
   component: FinancialAssistancePage,
@@ -27,6 +30,18 @@ export const Route = createFileRoute('/financial-assistance')({
 function FinancialAssistancePage() {
   const { t } = useTranslation()
   const { step } = Route.useSearch()
+  const dispatch = useAppDispatch()
+  const { hasSubmittedSuccessfully } = useAppSelector((state) => state.form)
+
+  // Clear form state when component unmounts (user navigates away from financial assistance page)
+  useEffect(() => {
+    return () => {
+      // Only clear if we were on the success screen
+      if (hasSubmittedSuccessfully) {
+        dispatch(clearForm())
+      }
+    }
+  }, [dispatch, hasSubmittedSuccessfully])
 
   return (
     <>

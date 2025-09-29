@@ -1,4 +1,5 @@
 import { type ReactNode } from "react"
+import { SkipLink } from "./SkipLink"
 import { Stepper } from "./Stepper"
 import { SupportResources } from "./SupportResources"
 
@@ -16,6 +17,9 @@ export function WizardLayout({
 }: WizardLayoutProps) {
   return (
     <div className="min-h-screen bg-[#C2B89C]/10">
+      {/* Skip Link */}
+      <SkipLink href="#main-content" />
+      
       {/* Stepper */}
       <Stepper currentStep={currentStep} steps={steps} />
       
@@ -26,9 +30,14 @@ export function WizardLayout({
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Form Content */}
               <div className="lg:col-span-2">
-                <div className="bg-white rounded-xl md:rounded-2xl shadow-sm border border-[#C2B89C]/20 p-4 md:p-8">
+                <main 
+                  id="main-content"
+                  className="bg-white rounded-xl md:rounded-2xl shadow-sm border border-[#C2B89C]/20 p-4 md:p-8"
+                  role="main"
+                  aria-label="Application form"
+                >
                   {children}
-                </div>
+                </main>
               </div>
               
               {/* Support Resources Sidebar */}
