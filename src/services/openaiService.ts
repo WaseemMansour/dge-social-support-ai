@@ -99,8 +99,8 @@ export async function generateAIContent(request: AIRequest, language: string = '
           {
             role: 'system',
             content: isArabic 
-              ? 'أنت مساعد مفيد يساعد المستخدمين في كتابة أوصاف واضحة ومهنية عن أوضاعهم المالية لطلبات المساعدة. كن متعاطفاً ومفصلاً وواقعياً. قدم معلومات شاملة تساعد المستخدمين على التعبير عن وضعهم بوضوح.'
-              : 'You are a helpful assistant that helps users write clear, professional descriptions of their financial situations for assistance applications. Be empathetic, detailed, and factual. Provide comprehensive information that helps users express their situation clearly.'
+              ? 'أنت مساعد كتابة. أعد فقط نصاً جاهزاً للإرسال دون أي مقدمات أو عبارات ميتا أو عناوين أو اقتباسات أو ترقيم أو Markdown. لا تقل "بالتأكيد" أو "إليك"، ولا تضف أية ملاحظات. أعد المحتوى مباشرة باللغة المناسبة اعتماداً على المدخلات.'
+              : 'You are a writing assistant. Return ONLY the final message body ready to send, with no preface, no meta text, no labels, no quotes, no markdown, and no extraneous commentary. Do NOT say "Sure", "Here is", etc. Output only the content in the appropriate language based on inputs.'
           },
           {
             role: 'user',
@@ -115,7 +115,8 @@ export async function generateAIContent(request: AIRequest, language: string = '
     if (!response.ok) throw new Error(`OpenAI request failed: ${response.status}`)
 
     const json = await response.json()
-    const content = json?.choices?.[0]?.message?.content?.trim()
+    const raw = json?.choices?.[0]?.message?.content?.trim() || ''
+    const content = sanitizeAIContent(raw)
 
     if (!content) {
       throw new Error('No content generated')
@@ -132,6 +133,18 @@ export async function generateAIContent(request: AIRequest, language: string = '
     ;(err as unknown as { status?: unknown }).status = normalized.status
     throw err
   }
+}
+
+function sanitizeAIContent(text: string): string {
+  let result = text.trim()
+  // Remove leading quotes/backticks and common prefaces
+  result = result.replace(/^[`"'\s]+/, '')
+  result = result.replace(/^\s*(sure|of course|here(?:\'s| is)?|certainly|gladly)[\s,:-]+/i, '')
+  // Remove wrappers like "Content:" or similar label lines
+  result = result.replace(/^\s*(content|response|message)\s*[:\-]\s*/i, '')
+  // Strip surrounding quotes/backticks if present after cleaning
+  result = result.replace(/[`"']+$/,'').trim()
+  return result
 }
 
 // Mock response generator (fallback)
