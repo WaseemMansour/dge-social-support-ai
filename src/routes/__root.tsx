@@ -1,7 +1,5 @@
 import { HelmetProvider } from '@dr.pogodin/react-helmet'
-import { TanstackDevtools } from '@tanstack/react-devtools'
 import { Outlet, createRootRoute, useLocation } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { Header } from '../components/Header'
 import { Toaster } from '../components/ui/sonner'
@@ -21,17 +19,6 @@ function RootComponent() {
       <Header currentPage={currentPage} />
       <Outlet />
       <Toaster />
-      <TanstackDevtools
-        config={{
-          position: 'bottom-left',
-        }}
-        plugins={[
-          {
-            name: 'Tanstack Router',
-            render: <TanStackRouterDevtoolsPanel />,
-          },
-        ]}
-      />
     </HelmetProvider>
   )
 }
